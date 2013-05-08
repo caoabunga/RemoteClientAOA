@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 gem 'rename'
 gem 'rails', '3.2.13'
 group :development, :test do
-  gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'sqlite3', :require => 'sqlite3'
 end
 
 group :assets do
