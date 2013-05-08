@@ -1,0 +1,48 @@
+<h3> The Dashboard </h3>
+ <p>
+
+  <select class="selectpicker">
+    <% @users.each do |user| %>
+      <option data-subtext="11"><%=link_to user.name, user %></option>
+    <% end %>
+      <option data-subtext="32">John Kennedy</option>
+  </select>
+ </p>
+
+<div id="main-content">
+  <ul class="nav nav-tabs" id="mainTabs">
+    <li><a title="some title" href="#device" data-toggle="tab">Device</a></li>
+    <li><a title="some title" href="#immunization" data-toggle="tab">Immunization</a></li>
+    <li><a title="some title" href="#pharmacy" data-toggle="tab">Pharmacy</a></li>
+</div>
+
+<div class ="tab-content" >
+  <div class="tab-pane active" id="device">
+    hello this is the device data panel
+  </div>
+    <div class="tab-pane active" id="immunization">
+    hello this is the immunization panel
+  </div>
+    <div class="tab-pane active" id="pharmacy">
+    
+    <div class="well">
+      <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source="[&quot;Anthrax&quot;,&quot;Heppas&quot;,&quot;The Plague&quot;,&quot;Whooping Cough&quot;,&quot;Allergic Mushrooms&quot;]">
+      <button type="submit" class="btn"> <i class="icon-ok"></i> Place Order</button>
+      
+    </div>
+    <h4>Existing Drugs</h4>
+
+    <table class="table table-striped table-hover">
+      <!--<caption>A description</caption>-->
+      <thead>
+        <tr><th>Administration Date</th><th>Name</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2013-02-14</td><td>Anthrax</td></tr>
+        <tr><td>2013-04-25</td><td>Hep A (IJA)</td></tr>
+        <tr><td>2013-05-05</td><td>Japanese Flu</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

@@ -147,6 +147,8 @@ GEM
     rake (10.0.4)
     rdoc (3.12.2)
       json (~> 1.4)
+    rename (0.0.6)
+      rails (>= 3.0.0)
     rolify (3.2.0)
     rspec-core (2.13.1)
     rspec-expectations (2.13.0)
@@ -213,6 +215,7 @@ DEPENDENCIES
   launchy (>= 2.2.0)
   quiet_assets (>= 1.0.2)
   rails (= 3.2.13)
+  rename
   rolify (>= 3.2.0)
   rspec-rails (>= 2.12.2)
   sass-rails (~> 3.2.3)
