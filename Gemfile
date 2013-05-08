@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
 gem 'rename'
 gem 'rails', '3.2.13'
+group :Production do
+      gem 'pg', '0.13.2'
+end
 group :development, :test do
   gem 'sqlite3', :require => 'sqlite3'
 end
