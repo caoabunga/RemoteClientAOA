@@ -16,3 +16,4 @@
 //= require_tree .
 //= require bootstrap-select.min
 //= require flot/jquery.flot
+//= require fartscroll
