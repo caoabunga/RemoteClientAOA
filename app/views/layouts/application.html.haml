@@ -6,8 +6,8 @@
       %meta{:content => content_for?(:description) ? yield(:description) : "A Client", :name => "description"}
         = stylesheet_link_tag "application", :media => "all"
         = javascript_include_tag "application"
-        = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"
-        = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"
+        -#= javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"
+        -#= javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"
         = csrf_meta_tags
         = yield(:head)
   %body{:class => "#{controller_name} #{action_name}"}
