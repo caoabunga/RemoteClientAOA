@@ -17,3 +17,4 @@
 //= require bootstrap-select.min
 //= require flot/jquery.flot
 //= require fartscroll
+//= require xml2json

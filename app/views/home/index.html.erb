@@ -4,18 +4,9 @@
       <hr>
       <h1>Hello {{yourName}}!</h1>
 </div>
+<h3> The Dashboard </h3>
 <div ng-view></div>
 
-<h3> The Dashboard </h3>
- <p>
-
-  <select class="selectpicker">
-    <% @users.each do |user| %>
-      <option data-subtext="11"><%=link_to user.name, user %></option>
-    <% end %>
-      <option data-subtext="32">John Kennedy</option>
-  </select>
- </p>
 <div class="accordion" id="accordion2">
   <div class="accordion-group">
     <div class="accordion-heading">
@@ -73,8 +64,12 @@
     <div id="placeholder" style="width:600px;height:300px"></div>
   </div>
     <div class="tab-pane active" id="immunization">
-    hello this is the immunization panel
-  </div>
+    <h4>Existing Immunizations</h4>
+
+
+    </div>
+    
+
     <div class="tab-pane active" id="pharmacy">
     
     <div class="well">

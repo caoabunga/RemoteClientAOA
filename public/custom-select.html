@@ -1,0 +1,24 @@
+  <div>
+    <select name="guitar." ng-model="guitar" ng-options="(guitar.make+'-'+guitar.introyear ) group by guitar.model for guitar in dataSet">
+      <option value="">-- chose a patient --</option>
+    </select>
+
+    <h1>Details:</h1>
+    <h1>{{guitar.desc}}!</h1>
+
+
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr><th>Administration Date</th><th>Name</th></tr>
+      </thead>
+      <tbody ng-repeat="guitar in dataSet">
+        <tr >
+          <td>{{guitar.introyear}}</td><td>{{guitar.model}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <!--<select class="selectpicker">-->
+        <!--      <option ng-repeat="project in projects | filter:search | orderBy:'name'"  data-subtext="{{project.description}}">{{project.name}}</option>-->
+  <!--</select>-->

@@ -1,15 +1,19 @@
 !!!
-%html{"ng-app"=>""}
+%html{"ng-app"=>"project"}
   %head
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
       %title= content_for?(:title) ? yield(:title) : "A Client {{yourName}}" 
       %meta{:content => content_for?(:description) ? yield(:description) : "A Client", :name => "description"}
         = stylesheet_link_tag "application", :media => "all"
-        = javascript_include_tag "application"
         = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"
         = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"
+        = javascript_include_tag "http://cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.2/angular-strap.min.js"
+        = javascript_include_tag "application"
         = csrf_meta_tags
         = yield(:head)
+      %script
+        console.log('load select');
+        $('.selectpicker').selectpicker({style: 'btn-info'});
   %body{:class => "#{controller_name} #{action_name}"}
     .navbar.navbar-fixed-top
       %nav.navbar-inner
