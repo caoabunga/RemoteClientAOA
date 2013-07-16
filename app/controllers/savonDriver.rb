@@ -1,6 +1,5 @@
-   #require 'soap/wsdlDriver'
-   require 'savon'
-   require 'pp'
+#require 'soap/wsdlDriver'
+require 'savon'
 
 =begin
    module DBLogger
@@ -18,23 +17,17 @@
    end
 =end
 
-   #client = Savon.client(wsdl: "http://172.16.12.82:37080/axis2/services/xdsbridge?wsdl" )
+#client = Savon.client(wsdl: "http://172.16.12.82:37080/axis2/services/xdsbridge?wsdl" )
 
-=begin
-   <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:ser="http://serviceimpl.pixpdq.services.hieos.vangent.com">
-   <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing"><wsa:Action>urn:hl7-org:v3:PRPA_IN201309UV02</wsa:Action><wsa:MessageID>uuid:a2f71d32-98d7-4116-9ea3-66096aee1c21</wsa:MessageID><wsa:To>http://172.16.12.82:37080/axis2/services/pixmgr</wsa:To></soap:Header>
-   <soap:Body>
-=end
+#filename = 'PRPA_IN201309UV02.xml'
+filename = "PIXSoapEnv.xml"
+file_content = File.read(filename)
+@xmldoc = Nokogiri::XML(file_content)
 
-   #filename = 'PRPA_IN201309UV02.xml'
-   filename = "PIXSoapEnv.xml"
-    file_content = File.read(filename)
-   @xmldoc = Nokogiri::XML(file_content)
-   #puts @xmldoc.to_s
-
-   wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
-   endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr.pixmgrHttpsSoap11Endpoint/"
-   namespace = "http://serviceimpl.pixpdqv3.services.hieos.vangent.com"
+wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
+endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
+content_type = '"application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
+#namespace = "http://serviceimpl.pixpdqv3.services.hieos.vangent.com"
 =begin
    wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
 
@@ -54,19 +47,22 @@
 
    )
 =end
+client = Savon.client(wsdl: wsdl,
+                      endpoint: endpoint,
+                      headers: {
+                          'Content-Type' => content_type
+                      },
+)
+puts "available ops: "
+client.operations.each do |ops|
+  puts ops
+end
+puts " ------------------------ "
 
-   client = Savon.client(wsdl:wsdl, endpoint:endpoint)
-   puts "available ops: "
-    client.operations.each do |ops|
-      puts ops
-    end
-    puts " ~~~~ "
-
-   #someXML = @xmldoc.to_s
-   #puts someXML
-
-   #response = client.call(:patient_registry_get_identifiers_query, message: { id: 42 })
-   response = client.call(:patient_registry_get_identifiers_query, xml: @xmldoc.to_s)
+#someXML = @xmldoc.to_s
+#puts someXML
+#response = client.call(:patient_registry_get_identifiers_query, message: { id: 42 })
+response = client.call(:patient_registry_get_identifiers_query, xml: @xmldoc.to_s)
 
 =begin
       response = client.call(:patient_registry_get_identifiers_query) do
@@ -77,9 +73,9 @@
 =end
 
 
-   #rescue Savon::SOAP::Fault => error
-   #print error
-   #end
+#rescue Savon::SOAP::Fault => error
+#print error
+#end
 =begin
    response = client.request(:mes, "login") do
      soap.body = {
