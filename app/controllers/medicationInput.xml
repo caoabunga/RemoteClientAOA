@@ -1,0 +1,10 @@
+<Patient>
+  <ids>
+    <id>1065</id>
+    <system>CHCS1</system>
+  </ids>
+  <ids>
+    <id>1065</id>
+    <system>CHCS2</system>
+  </ids>
+</Patient>
