@@ -9,7 +9,7 @@ patientId = @requestXMLDoc.css('reference').first['value']
 
 filename = "PIXRequestSoapEnv.xml"
 file_content = File.read(filename)
-@xmldoc = Nokogiri::XML(file_content)
+@medicationXMLDoc = Nokogiri::XML(file_content)
 
 #  TODO munge the soap request xml to use the patient id and or firstname, last name from above
 wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
@@ -30,7 +30,7 @@ puts " ------------------------ "
 #someXML = @xmldoc.to_s
 #puts someXML
 #response = client.call(:patient_registry_get_identifiers_query, message: { id: 42 })
-response = client.call(:patient_registry_get_identifiers_query, xml: @xmldoc.to_s)
+response = client.call(:patient_registry_get_identifiers_query, xml: @medicationXMLDoc.to_s)
 
 # TODO extract the patient and shove it back into the FIHRRxOrder.xml to form the response back to the message flow
 
