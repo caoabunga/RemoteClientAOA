@@ -8,8 +8,12 @@ require 'nokogiri'
 filename = "FIHRRXOrder.xml"
 fileXML = File.read(filename)
 @requestXMLDoc = Nokogiri::XML(fileXML)
-patientId = @requestXMLDoc.css('reference').first['value']
-puts patientId
+@requestXMLDoc.remove_namespaces!
+patientId = @requestXMLDoc.css('/rtop2/soaData/patient')
+puts patientId[0]['edipi'].to_s
+puts patientId[0]['system'].to_s
+puts patientId[1]['edipi'].to_s
+puts patientId[1]['system'].to_s
 
 #
 # assemble medication input xml
