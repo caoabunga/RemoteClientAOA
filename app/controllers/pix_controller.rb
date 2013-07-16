@@ -32,12 +32,14 @@ class PixController < ApplicationController
     #logger.debug request.body.read
     #@patients = User.all
     # extract event information
+=begin
     doc = REXML::Document.new(retXML)
     patientIds = []
     links = []
     doc.elements.each('/Order/subject/reference') do |ele|
       patientIds << ele
     end
+=end
     @doc =Nokogiri::XML(retXML)
     #logger.debug @doc.to_s
     #logger.debug @doc.xpath('/Order')     # doesn't work
