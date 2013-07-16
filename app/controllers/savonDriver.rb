@@ -26,6 +26,16 @@
    <soap:Body>
 =end
 
+   #filename = 'PRPA_IN201309UV02.xml'
+   filename = "PIXSoapEnv.xml"
+    file_content = File.read(filename)
+   @xmldoc = Nokogiri::XML(file_content)
+   #puts @xmldoc.to_s
+
+   wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
+   endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr.pixmgrHttpsSoap11Endpoint/"
+   namespace = "http://serviceimpl.pixpdqv3.services.hieos.vangent.com"
+=begin
    wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
 
    namespaces = {
@@ -41,22 +51,31 @@
                          namespaces: namespaces,
                          soap_header: soap_header,
                          pretty_print_xml: true
+
    )
+=end
+
+   client = Savon.client(wsdl:wsdl, endpoint:endpoint)
    puts "available ops: "
     client.operations.each do |ops|
       puts ops
     end
     puts " ~~~~ "
 
-   response = client.call(:patient_registry_get_identifiers_query, message: { id: 42 })
+   #someXML = @xmldoc.to_s
+   #puts someXML
+
+   #response = client.call(:patient_registry_get_identifiers_query, message: { id: 42 })
+   response = client.call(:patient_registry_get_identifiers_query, xml: @xmldoc.to_s)
 
 =begin
-   response = client.call(:patient_registry_get_identifiers_query) do
-     message username: "luke", password: "secret"
-   end
+      response = client.call(:patient_registry_get_identifiers_query) do
+        message username: "luke", password: "secret"
+      end
 
-   pp response.body.to_hash
+      pp response.body.to_hash
 =end
+
 
    #rescue Savon::SOAP::Fault => error
    #print error
