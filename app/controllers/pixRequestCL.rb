@@ -78,7 +78,7 @@ pixComment = Nokogiri::XML::Comment.new @doc, ' PIX lookup data '
 soaData.add_child(pixComment)
 
 patient = Nokogiri::XML::Node.new "patient", @doc
-patient['edipi']= '123456'
+patient['ien']= '123456'
 patient['system']= 'CHCS2'
 soaData.add_child(patient)
 

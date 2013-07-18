@@ -33,11 +33,11 @@
   </Order>
   <soaData>
     <!-- after PIX lookup -->
-    <patient edipi="1065" system="CHCS1"></patient>
-    <patient edipi="121" system="CHCS2"></patient>
+    <patient ien="10" system="CHCS1"></patient>
+    <patient ien="7965" system="CHCS2"></patient>
     <!-- after patient history -->
-    <medication name="aspirin" code="123456"/>
-    <medication name="ibuprofen" code="654321"/>
+    <medication name="aspirin" code="57344010901"/>
+    <medication name="ibuprofen" code="52125030402"/>
     <!-- after drug drug interaction -->
     <drugDrugError>Here is the error message or if empty assume success!</drugDrugError>
     <orderResponse>Order response goes here</orderResponse>

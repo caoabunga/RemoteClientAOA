@@ -29,7 +29,7 @@ class PixController < ApplicationController
 
   def rurl
     requestBodyXML = request.body.read;
-    logger.debug 'Hello world!'
+    logger.debug 'Hello PixController!'
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 #@requestXMLDoc.remove_namespaces!
@@ -104,7 +104,7 @@ puts " ------------------------ "
     soaData.add_child(pixComment)
 
     patient = Nokogiri::XML::Node.new "patient", @doc
-    patient['edipi']= '123456'
+    patient['ien']= '123456'
     patient['system']= 'CHCS2'
     soaData.add_child(patient)
 

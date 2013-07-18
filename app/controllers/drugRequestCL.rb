@@ -9,47 +9,18 @@ filename = "RTOP2.xml"
 fileXML = File.read(filename)
 @requestXMLDoc = Nokogiri::XML(fileXML)
 #@requestXMLDoc.remove_namespaces!
-patient = @requestXMLDoc.css('/rtop2/soaData/patient')
-
-=begin
-puts patient[0]['ien'].to_s
-puts patient[0]['system'].to_s
-puts patient[1]['ien'].to_s
-puts patient[1]['system'].to_s
-=end
-
-#
-# assemble medication input xml
-#
-=begin
-filename = "medicationInput.xml"
-file_content = File.read(filename)
-@medicationXMLDoc = Nokogiri::XML(file_content)
-=end
-medicationBuilder = Nokogiri::XML::Builder.new do |xml|
-  xml.Patient {
-    xml.ids {
-      xml.id_ patient[0]['ien'].to_s
-      xml.system patient[0]['system'].to_s
-    }
-    xml.ids {
-      xml.id_ patient[1]['ien'].to_s
-      xml.system patient[1]['system'].to_s
-    }
-
-  }
-end
+medication = @requestXMLDoc.css('/rtop2/soaData/medication')
 
 #
 # call patient history lookup
 #
-url = URI.parse('http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple')
-request = Net::HTTP::Post.new(url.path)
-request.content_type = 'application/xml'
-#request.body = @medicationXMLDoc.to_s
-request.body = medicationBuilder.to_xml
+_url = "http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/"+ medication[0]['code'] + ',' + medication[1]['code']
+url = URI.parse(_url)
+request = Net::HTTP::Get.new(url.path)
 response = Net::HTTP.start(url.host, url.port) { |http| http.request(request) }
 puts 'response ---------'
+puts response.body.to_s
+return
 cleanResponse = response.body.to_s[1..-1].chomp(']')
 
 =begin

@@ -5,10 +5,10 @@ require 'nokogiri'
 class MedicationController < ApplicationController
   def rurl
     requestBodyXML = request.body.read;
-    logger.debug 'Hello world!'
+    logger.debug 'Hello MedicationController!'
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
-    patientId = @requestXMLDoc.css('/rtop2/soaData/patient')
+    patient = @requestXMLDoc.css('/rtop2/soaData/patient')
 
 
 #
@@ -18,12 +18,12 @@ class MedicationController < ApplicationController
     medicationBuilder = Nokogiri::XML::Builder.new do |xml|
       xml.Patient {
         xml.ids {
-          xml.id_ patientId[0]['ien'].to_s
-          xml.system patientId[0]['system'].to_s
+          xml.id_ patient[0]['ien'].to_s
+          xml.system patient[0]['system'].to_s
         }
         #xml.ids {
-        #  xml.id_ patientId[1]['ien'].to_s
-        #  xml.system patientId[1]['system'].to_s
+        #  xml.id_ patient[1]['ien'].to_s
+        #  xml.system patient[1]['system'].to_s
         #}
 
       }
