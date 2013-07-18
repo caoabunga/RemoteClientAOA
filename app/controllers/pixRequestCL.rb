@@ -3,7 +3,6 @@ require 'savon'
 require 'pp'
 
 filename = "FIHRRXOrder.xml"
-
 fileXML = File.read(filename)
 @requestXMLDoc = Nokogiri::XML(fileXML)
 #@requestXMLDoc.remove_namespaces!
@@ -11,6 +10,7 @@ patientId = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/f
 #puts patientId
 
 filename = "PIXRequestSoapEnv.xml"
+filename = "PIXHealthShareRequestSoapEnv.xml"
 #filename = File.join(Rails.root, 'app','controllers', filename)
 file_content = File.read(filename)
 @pixRequestXMLDoc = Nokogiri::XML(file_content)
@@ -33,27 +33,35 @@ puts @pixRequestXMLDoc
 
 =end
 
+#
 #  TODO munge the soap request xml to use the patient id and or firstname, last name from above
+#
 wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
 endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
-content_type = '"application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
+wsdl = "http://web03/IHE/PIXManager.wsdl"
+#wsdl="http://www.sandiegoimmunizationregistry.org/PIXManager?wsdl"
+endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
+content_type = 'application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
 client = Savon.client(wsdl: wsdl,
                       endpoint: endpoint,
                       headers: {
-                          'Content-Type' => content_type
+                          'Content-Type' => content_type,
+                          'SOAPAction' => '""' # http://stackoverflow.com/questions/8524317/how-to-remove-soapaction-http-header-from-savon-request/8530848#8530848
+                                               # http://fagiani.github.io/savon/
                       },
 )
-
 
 =begin
 #
 # Debug
 #
+
 puts "available ops: "
 client.operations.each do |ops|
   puts ops
 end
 puts " ------------------------ "
+puts @pixRequestXMLDoc.to_s
 =end
 
 response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequestXMLDoc.to_s)
