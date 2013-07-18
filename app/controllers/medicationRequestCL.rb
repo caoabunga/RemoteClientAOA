@@ -5,7 +5,7 @@ require 'nokogiri'
 #
 # POST-ed FIRH Rx Order XML
 #
-filename = "FIHRRXOrder.xml"
+filename = "RTOP2.xml"
 fileXML = File.read(filename)
 @requestXMLDoc = Nokogiri::XML(fileXML)
 @requestXMLDoc.remove_namespaces!
