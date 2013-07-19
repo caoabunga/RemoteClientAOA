@@ -39,7 +39,7 @@
     <medication name="aspirin" code="57344010901"/>
     <medication name="ibuprofen" code="52125030402"/>
     <!-- after drug drug interaction -->
-    <drugDrugError>Here is the error message or if empty assume success!</drugDrugError>
+    <drugDrugInteraction>Here is the error message or if empty assume success!</drugDrugInteraction>
     <orderResponse>Order response goes here</orderResponse>
   </soaData>
 

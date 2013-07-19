@@ -20,36 +20,19 @@ request = Net::HTTP::Get.new(url.path)
 response = Net::HTTP.start(url.host, url.port) { |http| http.request(request) }
 puts 'response ---------'
 puts response.body.to_s
-return
+
 cleanResponse = response.body.to_s[1..-1].chomp(']')
 
-=begin
-filename = "medicationResponse.xml"
-file_content = File.read(filename)
-cleanResponse = Nokogiri::XML(file_content)
-=end
-
 #
-# TODO extract medications
-#
-firstXML, *lastXML = cleanResponse.split(/, /)
-puts firstXML
-puts *lastXML
-
-@firstXML = Nokogiri::XML(firstXML)
-@firstXML.remove_namespaces!
-
-#
-# insert medications into the FIHRRxOrder.xml to form the response back to the message flow
+# insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow
 #
 
 soaData = @requestXMLDoc.at_css "soaData"
-medicationHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from endpoint/patienthistory/webresources/patient-history-lookup  '
-soaData.add_child(medicationHistoryComment)
-medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
-medication['name']= 'aspirin'
-medication['code']= '123456'
-soaData.add_child(medication)
+drugHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from ' + _url
+soaData.add_child(drugHistoryComment)
+drugDrugInteraction = Nokogiri::XML::Node.new "drugDrugInteraction", @requestXMLDoc
+drugDrugInteraction.content= cleanResponse
+soaData.add_child(drugDrugInteraction)
 
 puts @requestXMLDoc.to_xml
 
