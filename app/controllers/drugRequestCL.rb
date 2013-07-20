@@ -2,19 +2,10 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 
+require '../../app/controllers/helper_utils'
+
 @error = 'Success!'
 @DRUG_DRUG_INTERACTION = "http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/"
-
-def do_get (urlString)
-  url = URI.parse(urlString)
-  http = Net::HTTP.new(url.host, url.port)
-  http.open_timeout = 10
-  http.read_timeout = 10
-  response = http.start do |http|
-    http.request_get(url.path)
-  end
-  response.body
-end
 
 #
 # POST-ed FIHR Rx Order XML
@@ -30,7 +21,7 @@ begin
 # call patient history lookup
 #
   urlString = @DRUG_DRUG_INTERACTION + medication[0]['code'] + ',' + medication[1]['code']
-  responseBody = do_get(urlString)
+  responseBody = HelperUtils.do_get(urlString)
   #puts 'response ---------'
   p responseBody.to_s
   #puts responseBody.to_s

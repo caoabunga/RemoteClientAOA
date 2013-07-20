@@ -33,7 +33,7 @@
   </Order>
   <soaData>
     <!-- after PIX lookup -->
-    <patient ien="10" system="CHCS1"></patient>
+    <patient ien="101" system="CHCS1"></patient>
     <patient ien="7965" system="CHCS2"></patient>
     <!-- after patient history -->
     <medication name="aspirin" code="57344010901"/>

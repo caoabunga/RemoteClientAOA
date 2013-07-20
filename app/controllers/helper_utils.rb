@@ -1,6 +1,8 @@
-module Helperutils
+require 'net/http'
+require 'uri'
+
+module HelperUtils
   def self.do_post (_urlString, post_xml)
-=begin
     url = URI.parse(_urlString)
     http = Net::HTTP.new(url.host, url.port)
     http.open_timeout = 60
@@ -9,7 +11,16 @@ module Helperutils
       http.post(url.path, post_xml, {'Content-Type' =>'application/xml'})
     end
     response.body
-=end
-  p 'helwhee'
   end
+  def self.do_get (urlString)
+    url = URI.parse(urlString)
+    http = Net::HTTP.new(url.host, url.port)
+    http.open_timeout = 10
+    http.read_timeout = 10
+    response = http.start do |http|
+      http.request_get(url.path)
+    end
+    response.body
+  end
+
 end

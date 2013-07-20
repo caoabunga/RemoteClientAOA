@@ -2,7 +2,7 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 
-require 'Helperutils'
+require '../../app/controllers/helper_utils'
 
 @error = 'Success!'
 @MEDICATION_PRESCRIPTION_URL = 'http://web03:8080/fhirprototype/webresources/medicationprescription'
@@ -24,7 +24,7 @@ begin
 #
 #  save a (pharmacy) order on the server and get an id back:
 #
-  responseBody = Helperutils.do_post(@MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
+  responseBody = HelperUtils.do_post(@MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
 #  puts responseBody
   medicationPresciptionId = responseBody
 
@@ -51,10 +51,9 @@ begin
 # place the order
 #
   order = @requestXMLDoc.xpath('//fihr:Order', 'fihr' => 'http://hl7.org/fhir')
-  orderResponseBody = do_post(@ORDER_URL, order.to_xml)
+  orderResponseBody = HelperUtils.do_post(@ORDER_URL, order.to_xml)
   @orderResponseXMLDoc = Nokogiri::XML(orderResponseBody)
-  @orderResponseXMLDoc
-  orderResponseXML = @orderResponseXMLDoc.xpath('//fihr:orderresponse', 'fihr' => 'http://hl7.org/fhir')
+  orderResponseXML = @orderResponseXMLDoc.root
 
 #
 # insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow

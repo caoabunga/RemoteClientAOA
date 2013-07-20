@@ -48,8 +48,8 @@ request.content_type = 'application/xml'
 #request.body = @medicationXMLDoc.to_s
 request.body = medicationBuilder.to_xml
 response = Net::HTTP.start(url.host, url.port) { |http| http.request(request) }
-puts 'response ---------'
 cleanResponse = response.body.to_s[1..-1].chomp(']')
+p cleanResponse
 
 =begin
 filename = "medicationResponse.xml"
