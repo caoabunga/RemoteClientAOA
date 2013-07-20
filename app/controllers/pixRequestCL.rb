@@ -12,8 +12,8 @@ patientId = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/f
 filename = "PIXRequestSoapEnv.xml"
 filename = "PIXHealthShareRequestSoapEnv.xml"
 #filename = File.join(Rails.root, 'app','controllers', filename)
-file_content = File.read(filename)
-@pixRequestXMLDoc = Nokogiri::XML(file_content)
+fileXML = File.read(filename)
+@pixRequestXMLDoc = Nokogiri::XML(fileXML)
 =begin
 @pixRequestXMLDoc.remove_namespaces!
 patientIdentifier = @pixRequestXMLDoc.css('patientIdentifier value').first['root']
@@ -26,7 +26,7 @@ pp elem
 #puts patientIdentifier
 
 #
-# here is an example of how to set it (remove namespace)
+# here is an example of how to set it with (remove namespace)
 #
 #@pixRequestXMLDoc.css('patientIdentifier value').first['root'] = '12121212'
 puts @pixRequestXMLDoc

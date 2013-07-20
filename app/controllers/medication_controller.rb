@@ -18,11 +18,11 @@ class MedicationController < ApplicationController
     medicationBuilder = Nokogiri::XML::Builder.new do |xml|
       xml.Patient {
         xml.ids {
-          xml.id_ patient[0]['ien'].to_s
+          xml.id patient[0]['ien'].to_s
           xml.system patient[0]['system'].to_s
         }
         #xml.ids {
-        #  xml.id_ patient[1]['ien'].to_s
+        #  xml.id patient[1]['ien'].to_s
         #  xml.system patient[1]['system'].to_s
         #}
 

@@ -28,8 +28,8 @@ class DrugController < ApplicationController
 #
 
     soaData = @requestXMLDoc.at_css "soaData"
-    drugHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from ' + _url
-    soaData.add_child(drugHistoryComment)
+    medicationPrescriptionComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from ' + _url
+    soaData.add_child(medicationPrescriptionComment)
     drugDrugInteraction = Nokogiri::XML::Node.new "drugDrugInteraction", @requestXMLDoc
     drugDrugInteraction.content= cleanResponse
     soaData.add_child(drugDrugInteraction)

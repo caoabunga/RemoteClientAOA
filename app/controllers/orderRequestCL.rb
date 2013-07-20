@@ -2,23 +2,12 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 
+require 'Helperutils'
+
 @error = 'Success!'
 @MEDICATION_PRESCRIPTION_URL = 'http://web03:8080/fhirprototype/webresources/medicationprescription'
 @ORDER_URL = 'http://web03:8080/fhirprototype/webresources/order'
 
-def do_post (_urlString, post_xml)
-  url = URI.parse(_urlString)
-  http = Net::HTTP.new(url.host, url.port)
-  http.open_timeout = 10
-  http.read_timeout = 10
-  # FIX ME
-  #http.content_type = 'application/xml'
-  #http.body = post_xml
-  response = http.start do |http|
-    http.request_post(url.path, post_xml)
-  end
-  response.body
-end
 #
 # POST-ed FIHR Rx Order XML
 #
@@ -35,14 +24,18 @@ begin
 #
 #  save a (pharmacy) order on the server and get an id back:
 #
-  responseBody = do_post(@MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
-  puts responseBody
+  responseBody = Helperutils.do_post(@MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
+#  puts responseBody
+  medicationPresciptionId = responseBody
 
 #
-# TODO pull prescription id and place into order
+# TODO pull prescription id and place into order; hard coded for now
 #
+ # medicationPresciptionId = '797427773'
 
-  medicationPresciptionId = '797427773'
+  # remove any exiting <detail/> nodes
+  @requestXMLDoc.xpath('//fihr:detail', 'fihr' => 'http://hl7.org/fhir').remove()
+
   @requestXMLDoc.xpath('//fihr:Order', 'fihr' => 'http://hl7.org/fhir').each do |node|
     detail = Nokogiri::XML::Node.new "detail", @requestXMLDoc
     type = Nokogiri::XML::Node.new "type", @requestXMLDoc
@@ -53,24 +46,27 @@ begin
     detail.add_child(reference)
     node.add_child(detail)
   end
-  puts @requestXMLDoc
 
 #
 # place the order
 #
   order = @requestXMLDoc.xpath('//fihr:Order', 'fihr' => 'http://hl7.org/fhir')
-  responseBody = do_post(@ORDER_URL, order.to_xml)
+  orderResponseBody = do_post(@ORDER_URL, order.to_xml)
+  @orderResponseXMLDoc = Nokogiri::XML(orderResponseBody)
+  @orderResponseXMLDoc
+  orderResponseXML = @orderResponseXMLDoc.xpath('//fihr:orderresponse', 'fihr' => 'http://hl7.org/fhir')
 
 #
 # insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow
 #
 
   soaData = @requestXMLDoc.at_css "soaData"
-  drugHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from ' + _url
-  soaData.add_child(drugHistoryComment)
-  drugDrugInteraction = Nokogiri::XML::Node.new "drugDrugInteraction", @requestXMLDoc
-  drugDrugInteraction.content= cleanResponse
-  soaData.add_child(drugDrugInteraction)
+  medicationPrescriptionComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication prescription from ' + @MEDICATION_PRESCRIPTION_URL
+  soaData.add_child(medicationPrescriptionComment)
+  orderComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Order from ' + @ORDER_URL
+  soaData.add_child(orderComment)
+  @requestXMLDoc.xpath('//orderResponse').remove()
+  soaData.add_child(orderResponseXML.to_xml)
 #rescue Exception => e
 #  soaData = @requestXMLDoc.at_css "soaData"
 #  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc

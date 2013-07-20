@@ -23,20 +23,19 @@ puts patient[1]['system'].to_s
 #
 =begin
 filename = "medicationInput.xml"
-file_content = File.read(filename)
-@medicationXMLDoc = Nokogiri::XML(file_content)
+fileXML = File.read(filename)
+@medicationXMLDoc = Nokogiri::XML(fileXML)
 =end
 medicationBuilder = Nokogiri::XML::Builder.new do |xml|
   xml.Patient {
     xml.ids {
-      xml.id_ patient[0]['ien'].to_s
+      xml.id patient[0]['ien'].to_s
       xml.system patient[0]['system'].to_s
     }
     xml.ids {
-      xml.id_ patient[1]['ien'].to_s
+      xml.id patient[1]['ien'].to_s
       xml.system patient[1]['system'].to_s
     }
-
   }
 end
 
@@ -54,8 +53,8 @@ cleanResponse = response.body.to_s[1..-1].chomp(']')
 
 =begin
 filename = "medicationResponse.xml"
-file_content = File.read(filename)
-cleanResponse = Nokogiri::XML(file_content)
+fileXML = File.read(filename)
+cleanResponse = Nokogiri::XML(fileXML)
 =end
 
 #
