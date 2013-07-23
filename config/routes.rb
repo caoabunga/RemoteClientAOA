@@ -11,4 +11,5 @@ Anotherapp::Application.routes.draw do
   post 'pix'  => 'pix#rurl', :defaults => { :format => 'xml' }
   post 'medication'  => 'medication#rurl', :defaults => { :format => 'xml' }
   post 'drug'  => 'drug#rurl', :defaults => { :format => 'xml' }
+  post 'order'  => 'order#rurl', :defaults => { :format => 'xml' }
 end

@@ -28,12 +28,13 @@ class OrderController < ApplicationController
 #
       responseBody = HelperUtils.do_post( @MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
 #  puts responseBody
+# medicationPresciptionId = '797427773'
       medicationPresciptionId = responseBody
 
 #
-# TODO pull prescription id and place into order; hard coded for now
+# place medication prescription into order
 #
-# medicationPresciptionId = '797427773'
+
 
 # remove any exiting <detail/> nodes
       @requestXMLDoc.xpath('//fihr:detail', 'fihr' => 'http://hl7.org/fhir').remove()
