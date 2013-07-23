@@ -32,24 +32,24 @@ pp elem
 puts @pixRequestXMLDoc
 
 =end
-
+begin
 #
 #  TODO munge the soap request xml to use the patient id and or firstname, last name from above
 #
-wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
-endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
-wsdl = "http://web03/IHE/PIXManager.wsdl"
-#wsdl="http://www.sandiegoimmunizationregistry.org/PIXManager?wsdl"
-endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
-content_type = 'application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
-client = Savon.client(wsdl: wsdl,
-                      endpoint: endpoint,
-                      headers: {
-                          'Content-Type' => content_type,
-                          'SOAPAction' => '""' # http://stackoverflow.com/questions/8524317/how-to-remove-soapaction-http-header-from-savon-request/8530848#8530848
-                                               # http://fagiani.github.io/savon/
-                      },
-)
+	wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
+	endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
+	wsdl = "http://web03/IHE/PIXManager.wsdl"
+	#wsdl="http://www.sandiegoimmunizationregistry.org/PIXManager?wsdl"
+	endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
+	content_type = 'application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
+	client = Savon.client(wsdl: wsdl,
+	                      endpoint: endpoint,
+	                      headers: {
+	                          'Content-Type' => content_type,
+	                          'SOAPAction' => '""' # http://stackoverflow.com/questions/8524317/how-to-remove-soapaction-http-header-from-savon-request/8530848#8530848
+	                                               # http://fagiani.github.io/savon/
+	                      },
+	)
 
 =begin
 #
@@ -64,7 +64,7 @@ puts " ------------------------ "
 puts @pixRequestXMLDoc.to_s
 =end
 
-response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequestXMLDoc.to_s)
+	response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequestXMLDoc.to_s)
 
 #
 # TODO extract the patient and shove it back into the FIHRRxOrder.xml to form the response back to the message flow
@@ -73,27 +73,41 @@ response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequest
 #
 # create the return <rtop2/> document, and add in the original FIHRRxOrder.xml
 #
-@doc = Nokogiri::XML::Document.parse("<rtop2/>")
-rtop2 =  @doc.at_css "rtop2"
-order = @requestXMLDoc.at_css "Order"
-rtop2.add_child(order)
+	@doc = Nokogiri::XML::Document.parse("<rtop2/>")
+	rtop2 =  @doc.at_css "rtop2"
+	order = @requestXMLDoc.at_css "Order"
+	rtop2.add_child(order)
 
-#
-# create <soaData/> node and add the patient dat
-#
-soaData = Nokogiri::XML::Node.new "soaData", @doc
-pixComment = Nokogiri::XML::Comment.new @doc, ' PIX lookup data '
-soaData.add_child(pixComment)
+	#
+	# create <soaData/> node and add the patient dat
+	#
+	soaData = Nokogiri::XML::Node.new "soaData", @doc
+	pixComment = Nokogiri::XML::Comment.new @doc, ' PIX lookup data '
+	soaData.add_child(pixComment)
 
-patient = Nokogiri::XML::Node.new "patient", @doc
-patient['ien']= '123456'
-patient['system']= 'CHCS2'
-soaData.add_child(patient)
+   	patient = Nokogiri::XML::Node.new "patient", @doc
+	patient['ien']= '101'
+	patient['system']= 'CHCS1'
+	soaData.add_child(patient)
+	patient = Nokogiri::XML::Node.new "patient", @doc
+    patient['ien']= '7988'
+    patient['system']= 'CHCS2'
+	soaData.add_child(patient)
 
 #
 # add  <soaData/> to the <rtop/>
 #
-rtop2.add_child(soaData)
+	rtop2.add_child(soaData)
+
+rescue  Exception => e
+  message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/medication test" 
+  #soaData = @requestXMLDoc.at_css "soaData"
+  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
+  errorFromGlueService.content = message
+  rtop2.add_child(errorFromGlueService)
+  @error = message 
+  logger.debug @error
+end
 
 #
 # debug

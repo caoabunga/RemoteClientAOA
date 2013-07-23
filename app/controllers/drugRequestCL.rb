@@ -4,7 +4,7 @@ require 'nokogiri'
 
 require '../../app/controllers/helper_utils'
 
-@error = 'Success!'
+@error = 'Success drug-interactions'
 @DRUG_DRUG_INTERACTION = "http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/"
 
 #
@@ -38,11 +38,12 @@ begin
   drugDrugInteraction.content= drugDrugResponseBodyMessage
   soaData.add_child(drugDrugInteraction)
 rescue Exception => e
+  message = 'Failed - ' +  e.message + "  You can try the POSTMAN http://web03/order test"
   soaData = @requestXMLDoc.at_css "soaData"
   errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
-  errorFromGlueService.content = e.message
+  errorFromGlueService.content = message
   soaData.add_child(errorFromGlueService)
-  @error = 'Failed ' + e.message
+  @error = message
 end
 
 puts @requestXMLDoc.to_xml

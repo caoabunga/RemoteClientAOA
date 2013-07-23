@@ -34,7 +34,7 @@
   <soaData>
     <!-- after PIX lookup -->
     <patient ien="101" system="CHCS1"></patient>
-    <patient ien="7965" system="CHCS2"></patient>
+    <patient ien="7988" system="CHCS2"></patient>
     <!-- after patient history -->
     <medication name="aspirin" code="57344010901"/>
     <medication name="ibuprofen" code="52125030402"/>

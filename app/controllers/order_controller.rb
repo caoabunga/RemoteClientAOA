@@ -10,6 +10,7 @@ require 'helper_utils'
 class OrderController < ApplicationController
 
   def rurl
+    @error = 'Success - order medication prescription'
     @MEDICATION_PRESCRIPTION_URL = 'http://web03:8080/fhirprototype/webresources/medicationprescription'
     @ORDER_URL = 'http://web03:8080/fhirprototype/webresources/order'
     requestBodyXML = request.body.read;
@@ -22,7 +23,7 @@ class OrderController < ApplicationController
     fileXML = File.read(filename)
     @medicationPrescription = Nokogiri::XML(fileXML)
 
-    begin
+begin
 #
 #  save a (pharmacy) order on the server and get an id back:
 #
@@ -68,14 +69,17 @@ class OrderController < ApplicationController
       orderComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Order from ' + @ORDER_URL
       soaData.add_child(orderComment)
       @requestXMLDoc.xpath('//orderResponse').remove()
-      soaData.add_child(orderResponseXML.to_xml)
-#rescue Exception => e
-#  soaData = @requestXMLDoc.at_css "soaData"
-#  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
-#  errorFromGlueService.content = e.message
-#  soaData.add_child(errorFromGlueService)
-#  @error = 'Failed -- ' +  e.message
-    end
+      soaData.add_child(orderResponseXML.to_xml)  
+      logger.debug @error
+rescue  Exception => e
+  message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/order test"
+  soaData = @requestXMLDoc.at_css "soaData"
+  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
+  errorFromGlueService.content = message
+  soaData.add_child(errorFromGlueService)
+  @error = message
+  logger.debug @error
+end
 
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }

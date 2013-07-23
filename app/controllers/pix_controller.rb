@@ -38,7 +38,7 @@ class PixController < ApplicationController
 
     filename = "PIXRequestSoapEnv.xml"
     filename = "PIXHealthShareRequestSoapEnv.xml"
-filename = File.join(Rails.root, 'app','controllers', filename)
+    filename = File.join(Rails.root, 'app','controllers', filename)
     fileXML = File.read(filename)
     @pixRequestXMLDoc = Nokogiri::XML(fileXML)
 =begin

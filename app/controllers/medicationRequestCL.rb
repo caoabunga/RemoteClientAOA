@@ -1,7 +1,12 @@
 require 'net/http'
 require 'uri'
 require 'nokogiri'
+require 'logger'
 
+logger = Logger.new(STDOUT)
+
+@PATIENT_HISTORY_URL = 'http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple'
+@error = "Success - patient history lookup"
 #
 # POST-ed FIHR Rx Order XML
 #
@@ -39,10 +44,11 @@ medicationBuilder = Nokogiri::XML::Builder.new do |xml|
   }
 end
 
+begin
 #
 # call patient history lookup
 #
-url = URI.parse('http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple')
+url = URI.parse(@PATIENT_HISTORY_URL)
 request = Net::HTTP::Post.new(url.path)
 request.content_type = 'application/xml'
 #request.body = @medicationXMLDoc.to_s
@@ -72,15 +78,25 @@ puts *lastXML
 #
 
 soaData = @requestXMLDoc.at_css "soaData"
-medicationHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from endpoint/patienthistory/webresources/patient-history-lookup  '
+medicationHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, @PATIENT_HISTORY_URL
 soaData.add_child(medicationHistoryComment)
 medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
 medication['name']= 'aspirin'
 medication['code']= '123456'
 soaData.add_child(medication)
+logger.debug @error
+
+rescue  Exception => e
+  message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/medication test" 
+  soaData = @requestXMLDoc.at_css "soaData"
+  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
+  errorFromGlueService.content = message
+  soaData.add_child(errorFromGlueService)
+  @error = message 
+  logger.debug @error
+end
 
 puts @requestXMLDoc.to_xml
 
-puts 'Success!'
 
 

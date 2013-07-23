@@ -4,7 +4,7 @@ require 'nokogiri'
 
 require '../../app/controllers/helper_utils'
 
-@error = 'Success!'
+@error = 'Success - order medication prescription'
 @MEDICATION_PRESCRIPTION_URL = 'http://web03:8080/fhirprototype/webresources/medicationprescription'
 @ORDER_URL = 'http://web03:8080/fhirprototype/webresources/order'
 
@@ -66,18 +66,18 @@ begin
   soaData.add_child(orderComment)
   @requestXMLDoc.xpath('//orderResponse').remove()
   soaData.add_child(orderResponseXML.to_xml)
-#rescue Exception => e
-#  soaData = @requestXMLDoc.at_css "soaData"
-#  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
-#  errorFromGlueService.content = e.message
-#  soaData.add_child(errorFromGlueService)
-#  @error = 'Failed -- ' +  e.message
+rescue Exception => e
+ message = 'Failed - ' +  e.message + "  You can try the POSTMAN http://web03/order test"
+ soaData = @requestXMLDoc.at_css "soaData"
+ errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
+ errorFromGlueService.content = message
+ soaData.add_child(errorFromGlueService)
+ @error =  message
+ logger.debug @error
 end
 
-if (@error == 'Success!')
-  puts @requestXMLDoc.to_xml
-end
 
-puts @error
+puts @requestXMLDoc.to_xml
+
 
 
