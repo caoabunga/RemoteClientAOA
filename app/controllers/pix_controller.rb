@@ -1,7 +1,15 @@
 #require 'soap/wsdlDriver'
 
+require 'testprintme'
+
+Testprintme.helloworld
 class PixController < ApplicationController
+  include Testprintme
   def lookup
+    reference = Testprintme::Testclass.new
+    Testprintme::Testclass.helloworld
+    reference.helloworld1
+    reference.helloworld
     puts "on lookup for " + params[:id]
     @patients = User.all
 
