@@ -7,6 +7,8 @@ require 'helper_utils'
 class DrugController < ApplicationController
   def rurl
     @error = 'Success - drug interactions'
+    @DRUG_DRUG_INTERACTION = "http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/"
+
     requestBodyXML = request.body.read;
     logger.debug 'Hello DrugController!'
 
@@ -21,7 +23,7 @@ class DrugController < ApplicationController
 begin
 # call patient history lookup
 #
-    urlString = "http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/"+ medication[0]['code'] + ',' + medication[1]['code']
+    urlString = @DRUG_DRUG_INTERACTION + medication[0]['code'] + ',' + medication[1]['code']
     responseBody = HelperUtils.do_get(urlString)
 
     cleanResponse = responseBody.to_s[1..-1].chomp(']')

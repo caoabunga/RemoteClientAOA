@@ -70,7 +70,11 @@ class MedicationController < ApplicationController
     soaData.add_child(medicationHistoryComment)
     medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
     medication['name']= 'aspirin'
-    medication['code']= '123456'
+    medication['code']= '57344010901'
+    soaData.add_child(medication)
+    medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
+    medication['name']= 'tylenol'
+    medication['code']= '52125030402'
     soaData.add_child(medication)
 
     filename = "MedicationOut.xml"
