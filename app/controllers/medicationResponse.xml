@@ -1,0 +1,7 @@
+<MedicationAdministration xmlns="http://hl7.org/fhir">
+  <language value="some value"/>
+  <patient>
+    <type value="Patient"/>
+    <display value="../patient/@example"/>
+  </patient>
+</MedicationAdministration>

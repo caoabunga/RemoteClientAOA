@@ -1,3 +1,4 @@
+<rtop2>
   <Order xmlns="http://hl7.org/fhir">
     <text>
       <status value="generated"/>
@@ -30,5 +31,17 @@
       <reference value="51350285"/>
     </detail>
   </Order>
+  <soaData>
+    <!-- after PIX lookup -->
+    <patient ien="101" system="CHCS1"></patient>
+    <patient ien="7988" system="CHCS2"></patient>
+    <!-- after patient history -->
+    <medication name="aspirin" code="57344010901"/>
+    <medication name="ibuprofen" code="52125030402"/>
+    <!-- after drug drug interaction -->
+    <drugDrugInteraction>Here is the error message or if empty assume success!</drugDrugInteraction>
+    <orderResponse>Order response goes here</orderResponse>
+  </soaData>
 
+</rtop2>
 
