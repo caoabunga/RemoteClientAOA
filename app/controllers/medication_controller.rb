@@ -13,6 +13,13 @@ class MedicationController < ApplicationController
     patient = @requestXMLDoc.css('/rtop2/soaData/patient')
 
 
+    filename = "MedicationIn.xml"
+    filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+    File.open(filename, 'w') do |f|
+      f.puts @requestXMLDoc.to_xml
+    end
+
+
 #
 # assemble medication input xml
 #
@@ -65,6 +72,13 @@ class MedicationController < ApplicationController
     medication['name']= 'aspirin'
     medication['code']= '123456'
     soaData.add_child(medication)
+
+    filename = "MedicationOut.xml"
+    filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+    File.open(filename, 'w') do |f|
+      f.puts @requestXMLDoc.to_xml
+    end
+    
     logger.debug @error
 
     rescue  Exception => e

@@ -11,7 +11,11 @@ class DrugController < ApplicationController
     logger.debug 'Hello DrugController!'
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
-
+    filename = "DrugIn.xml"
+      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      File.open(filename, 'w') do |f|
+      f.puts @requestXMLDoc.to_xml
+    end
     medication = @requestXMLDoc.css('/rtop2/soaData/medication')
 
 begin
@@ -32,6 +36,11 @@ begin
     drugDrugInteraction = Nokogiri::XML::Node.new "drugDrugInteraction", @requestXMLDoc
     drugDrugInteraction.content= cleanResponse
     soaData.add_child(drugDrugInteraction)
+    filename = "DrugOut.xml"
+      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      File.open(filename, 'w') do |f|
+      f.puts @requestXMLDoc.to_xml
+    end
 rescue Exception => e
   message = 'Failed - ' +  e.message + "  You can try the POSTMAN http://web03/drug test"
   soaData = @requestXMLDoc.at_css "soaData"

@@ -18,6 +18,12 @@ class OrderController < ApplicationController
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 
+    filename = "OrderIn.xml"
+    filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+    File.open(filename, 'w') do |f|
+      f.puts @requestXMLDoc.to_xml
+    end
+
     filename = "medicationprescription-example-f001-combivent.xml"
     filename = File.join(Rails.root, 'app','controllers', filename)
     fileXML = File.read(filename)
@@ -70,6 +76,11 @@ begin
       soaData.add_child(orderComment)
       @requestXMLDoc.xpath('//orderResponse').remove()
       soaData.add_child(orderResponseXML.to_xml)  
+      filename = "OrderOut.xml"
+      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      File.open(filename, 'w') do |f|
+      f.puts @requestXMLDoc.to_xml
+    end
       logger.debug @error
 rescue  Exception => e
   message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/order test"
