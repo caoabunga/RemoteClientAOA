@@ -6,12 +6,13 @@ require 'helper_utils'
 
 class DrugController < ApplicationController
   def rurl
+
     @error = 'Success - drug interactions'
-    @DRUG_DRUG_INTERACTION = "http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/"
+    @DRUG_DRUG_INTERACTION = ENV["DRUG_INTERACTION"]
 
+    logger.debug 'Hello DrugController, using: '+ @DRUG_DRUG_INTERACTION
     requestBodyXML = request.body.read;
-    logger.debug 'Hello DrugController!'
-
+    
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
     filename = "DrugIn.xml"
       filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
@@ -23,8 +24,18 @@ class DrugController < ApplicationController
 begin
 # call patient history lookup
 #
-    urlString = @DRUG_DRUG_INTERACTION + medication[0]['code'] + ',' + medication[1]['code']
+    csvNdcCode = ""
+    medication.each do |m|
+      csvNdcCode = csvNdcCode + m['code']
+      if m != medication.last
+        csvNdcCode = csvNdcCode + "," 
+      end
+    end
+    
+    urlString = @DRUG_DRUG_INTERACTION + csvNdcCode
+    logger.debug("sending drug interaction request with: " + urlString)
     responseBody = HelperUtils.do_get(urlString)
+    logger.debug("our response back is " + responseBody)
 
     cleanResponse = responseBody.to_s[1..-1].chomp(']')
 
@@ -44,7 +55,7 @@ begin
       f.puts @requestXMLDoc.to_xml
     end
 rescue Exception => e
-  message = 'Failed - ' +  e.message + "  You can try the POSTMAN http://web03/drug test"
+  message = 'Failed - ' +  e + "  You can try the POSTMAN http://web03/drug test"
   soaData = @requestXMLDoc.at_css "soaData"
   errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
   errorFromGlueService.content = message
