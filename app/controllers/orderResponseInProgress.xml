@@ -1,0 +1,13 @@
+<OrderResponse xmlns="http://hl7.org/fhir">
+   <request>
+    <type value="Order"/>
+    <reference value="order/@example"/>
+  </request>
+  <date value="2012-12-28T13:10:56+11:00"/>
+  <who>
+    <type value="Organization"/>
+    <reference value="organization/@1832473e-2fe0-452d-abe9-3cdb9879522f"/>
+  </who>
+  <code value="pending"/>
+  <description value"http://10.255.166.15:3000/medication">URL to read the fullfilment queue</description>
+</OrderResponse>
