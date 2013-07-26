@@ -1,42 +1,48 @@
 require 'net/http'
 require 'uri'
 require 'nokogiri'
+require 'figaro'
 
 class MedicationController < ApplicationController
+
   def rurl
-    @PATIENT_HISTORY_URL = 'http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple'
+    @PATIENT_HISTORY_URL =  ENV["ITEC_PATIENT_HISTORY_URL"]
+    logger.debug "Using Patient History URL: " +  @PATIENT_HISTORY_URL
+
     @error = "Success - patient history lookup"
     requestBodyXML = request.body.read;
-    logger.debug 'Hello MedicationController!'
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
     patient = @requestXMLDoc.css('/rtop2/soaData/patient')
 
-
     filename = "MedicationIn.xml"
-    filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+    filename = File.join(Rails.root, 'public', 'payload-files', filename)
     File.open(filename, 'w') do |f|
       f.puts @requestXMLDoc.to_xml
     end
 
 
-#
-# assemble medication input xml
-#
+    #
+    # assemble medication input xml
+    #
+    
 
     medicationBuilder = Nokogiri::XML::Builder.new do |xml|
       xml.Patient {
         xml.ids {
-          xml.id patient[0]['ien'].to_s
-          xml.system patient[0]['system'].to_s
+          patient.each do |p|
+              xml.id p['ien']
+              xml.system p['system']
+          end
+
         }
-        #xml.ids {
-        #  xml.id patient[1]['ien'].to_s
-        #  xml.system patient[1]['system'].to_s
-        #}
 
       }
     end
+
+    p "Posting medication history -->"
+    p medicationBuilder.to_xml
+
     begin
     #
     # call patient history lookup
@@ -68,14 +74,15 @@ class MedicationController < ApplicationController
     soaData = @requestXMLDoc.at_css "soaData"
     medicationHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, @PATIENT_HISTORY_URL
     soaData.add_child(medicationHistoryComment)
-    medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
-    medication['name']= 'aspirin'
-    medication['code']= '57344010901'
-    soaData.add_child(medication)
-    medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
-    medication['name']= 'tylenol'
-    medication['code']= '52125030402'
-    soaData.add_child(medication)
+    
+    @ndcCodes = @firstXML.xpath("//display")
+        
+    @ndcCodes.each do |code|
+      medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
+      #medication['name']= 'aspirin'
+      medication['code']= code['value']
+      soaData.add_child(medication)
+    end
 
     filename = "MedicationOut.xml"
     filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
