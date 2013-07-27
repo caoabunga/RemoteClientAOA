@@ -97,7 +97,9 @@ puts " ------------------------ "
 =end
 
       response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequestXMLDoc.to_s)
-
+      pixXML = Nokogiri::XML::Document.parse(response.to_xml);
+      pixXML.remove_namespaces!
+      pixListOfIds = pixXML.xpath('//patient/id/@extension')
 #
 # TODO extract the patient and shove it back into the FIHRRxOrder.xml to form the response back to the message flow
 #

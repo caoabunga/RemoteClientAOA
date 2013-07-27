@@ -65,6 +65,11 @@ puts @pixRequestXMLDoc.to_s
 =end
 
 	response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequestXMLDoc.to_s)
+	#puts response.xpath('//fihr:patient', 'fihr' => 'urn:hl7-org:v3')
+	pixXML = Nokogiri::XML::Document.parse(response.to_xml);
+	pixXML.remove_namespaces!
+	pixListOfIds = pixXML.xpath('//patient/id/@extension')
+
 
 #
 # TODO extract the patient and shove it back into the FIHRRxOrder.xml to form the response back to the message flow
@@ -100,17 +105,20 @@ puts @pixRequestXMLDoc.to_s
 	rtop2.add_child(soaData)
 
 rescue  Exception => e
+  @doc = Nokogiri::XML::Document.parse("<rtop2/>")
+  rtop2 =  @doc.at_css "rtop2"
   message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/medication test" 
   #soaData = @requestXMLDoc.at_css "soaData"
   errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
   errorFromGlueService.content = message
   rtop2.add_child(errorFromGlueService)
   @error = message 
-  logger.debug @error
+  #logger.debug @error
+  puts @error
 end
 
 #
 # debug
 #
-puts rtop2.to_xml
+#puts rtop2.to_xml
 
