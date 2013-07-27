@@ -129,6 +129,9 @@ GEM
     orm_adapter (0.4.0)
     pg (0.13.2)
     polyglot (0.3.3)
+    pusher (0.11.3)
+      multi_json (~> 1.0)
+      signature (~> 0.1.6)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.5)
@@ -186,6 +189,7 @@ GEM
       nori (~> 2.1.0)
       wasabi (~> 3.1.0)
     sexp_processor (4.2.1)
+    signature (0.1.7)
     simple_form (2.1.0)
       actionpack (~> 3.0)
       activemodel (~> 3.0)
@@ -235,6 +239,7 @@ DEPENDENCIES
   launchy (>= 2.2.0)
   nokogiri
   pg (= 0.13.2)
+  pusher
   quiet_assets (>= 1.0.2)
   rails (= 3.2.13)
   rename

@@ -1,7 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'nokogiri'
-
+require 'pusher'
 require 'helper_utils'
 
 class DrugController < ApplicationController
@@ -9,13 +9,14 @@ class DrugController < ApplicationController
 
     @error = 'Success - drug interactions'
     @DRUG_DRUG_INTERACTION = ENV["DRUG_INTERACTION"]
+    Pusher.url = ENV["PUSHER_URL"]
 
     logger.debug 'Hello DrugController, using: '+ @DRUG_DRUG_INTERACTION
     requestBodyXML = request.body.read;
     
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
     filename = "DrugIn.xml"
-      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      filename = File.join(Rails.root, 'public', 'payload-files', filename)
       File.open(filename, 'w') do |f|
       f.puts @requestXMLDoc.to_xml
     end
@@ -39,6 +40,7 @@ begin
 
     cleanResponse = responseBody.to_s[1..-1].chomp(']')
 
+
 #
 # insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow
 #
@@ -50,7 +52,7 @@ begin
     drugDrugInteraction.content= cleanResponse
     soaData.add_child(drugDrugInteraction)
     filename = "DrugOut.xml"
-      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      filename = File.join(Rails.root, 'public', 'payload-files', filename)
       File.open(filename, 'w') do |f|
       f.puts @requestXMLDoc.to_xml
     end
@@ -63,6 +65,9 @@ rescue Exception => e
   @error = message
   logger.debug @error
 end
+    Pusher['test_channel'].trigger('my_event', {
+      message: "<label for=\"xml-container\">Drug Interaction Response:</label><textarea id=\"xml-container\">" + @requestXMLDoc.to_xml + "</textarea>"
+    })
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }
       #format.json { render :json=>@patients }

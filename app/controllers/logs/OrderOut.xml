@@ -1,39 +1,50 @@
 <?xml version="1.0"?>
 <rtop2>
-  <Order xmlns="http://hl7.org/fhir">
-    <text>
-      <status value="generated"/>
-      <div xmlns="http://www.w3.org/1999/xhtml">Request for Prescription (on patient Donald DUCK @ Acme Healthcare, Inc.
+    <Order xmlns="http://hl7.org/fhir">
+        <text>
+            <status value="generated"/>
+            <div xmlns="http://www.w3.org/1999/xhtml">Request for Prescription (on patient Donald DUCK @ Acme Healthcare, Inc.
         MR = 654321)
-      </div>
-    </text>
-    <date value="2012-12-28T09:03:04+11:00"/>
-    <subject>
-      <type value="Patient"/>
-      <reference value="1065"/>
-    </subject>
-    <source>
-      <type value="Practitioner"/>
-      <reference value="practitioner/@example"/>
-    </source>
-    <reason value="Standard admission testing"/>
-
-    <!--   Institution local code meaning "do this today"   -->
-    <when>
-      <code>
-        <coding>
-          <system value="http://acme.com/codes/request-priority"/>
-          <code value="today"/>
-        </coding>
-      </code>
-    </when>
-    
-  <detail><type value="MedicationPrescription"/><reference value="1548988806"/></detail></Order>
-  <soaData>
-    <!-- PIX lookup data -->
-    <patient ien="101" system="CHCS1"/>
-    <patient ien="7988" system="CHCS2"/>
-  <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple--><medication name="aspirin" code="57344010901"/><medication name="tylenol" code="52125030402"/><!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/57344010901,52125030402--><drugDrugInteraction>Scope = 3 (resolve INGREDIENT_KIND entities to the corresponding DRUG_KIND/Ingredient entities + resolve DRUG_KIND/VA Product entities to their constitutive DRUG_KIND/Ingredient entities + explore the specific salts of a non-salt form as necessary) Drug1 (nui = N0000150577), IBUPROFEN 200MG TAB, is DRUG_KIND Drug2 (nui = N0000162828), LITHIUM CARBONATE 150MG CAP,UD, is DRUG_KIND Drug1 is resolved to IBUPROFEN, Drug2 is resolved to LITHIUM and interaction asserted in NDF-RT between IBUPROFEN and LITHIUM through IBUPROFEN/LITHIUM.</drugDrugInteraction><!-- Medication prescription from http://web03:8080/fhirprototype/webresources/medicationprescription--><!-- Order from http://web03:8080/fhirprototype/webresources/order--><OrderResponse xmlns="http://hl7.org/fhir">
+      
+            
+            </div>
+        </text>
+        <date value="2012-12-28T09:03:04+11:00"/>
+        <subject>
+            <type value="Patient"/>
+            <reference value="1065"/>
+        </subject>
+        <source>
+            <type value="Practitioner"/>
+            <reference value="practitioner/@example"/>
+        </source>
+        <reason value="Standard admission testing"/>
+        <!--   Institution local code meaning "do this today"   -->
+        <when>
+            <code>
+                <coding>
+                    <system value="http://acme.com/codes/request-priority"/>
+                    <code value="today"/>
+                </coding>
+            </code>
+        </when>
+        
+    <detail><type value="MedicationPrescription"/><reference value="1181193667"/></detail></Order>
+    <soaData>
+        <!-- after PIX lookup -->
+        <patient ien="8001" system="CHCS1"/>
+        <patient ien="1065" system="CHCS2"/>
+        <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple-->
+        <medication code="555003302"/>
+        <medication code="38697010101"/>
+        <medication code="115703301"/>
+        <medication code="78005805"/>
+        <medication code="78005805"/>
+        <medication code="591222910"/>
+        <medication code="904201380"/>
+        <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/555003302,38697010101,115703301,78005805,78005805,591222910,904201380-->
+        <drugDrugInteraction>o Interactions Found</drugDrugInteraction>
+    <!-- Medication prescription from http://web03:8080/fhirprototype/webresources/medicationprescription--><!-- Order from http://web03:8080/fhirprototype/webresources/order--><OrderResponse xmlns="http://hl7.org/fhir">
   <language value="English"/>
   <request>
     <type value="Order"/>

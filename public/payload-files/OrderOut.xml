@@ -6,6 +6,7 @@
             <div xmlns="http://www.w3.org/1999/xhtml">Request for Prescription (on patient Donald DUCK @ Acme Healthcare, Inc.
         MR = 654321)
       
+            
             </div>
         </text>
         <date value="2012-12-28T09:03:04+11:00"/>
@@ -27,11 +28,8 @@
                 </coding>
             </code>
         </when>
-        <detail>
-            <type value="DiagnosticOrder"/>
-            <reference value="51350285"/>
-        </detail>
-    </Order>
+        
+    <detail><type value="MedicationPrescription"/><reference value="2031626638"/></detail></Order>
     <soaData>
         <!-- after PIX lookup -->
         <patient ien="8001" system="CHCS1"/>
@@ -44,5 +42,25 @@
         <medication code="78005805"/>
         <medication code="591222910"/>
         <medication code="904201380"/>
-    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/555003302,38697010101,115703301,78005805,78005805,591222910,904201380--><drugDrugInteraction>o Interactions Found</drugDrugInteraction></soaData>
+        <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/555003302,38697010101,115703301,78005805,78005805,591222910,904201380-->
+        <drugDrugInteraction>o Interactions Found</drugDrugInteraction>
+    <!-- Medication prescription from http://web03:8080/fhirprototype/webresources/medicationprescription--><!-- Order from http://web03:8080/fhirprototype/webresources/order--><OrderResponse xmlns="http://hl7.org/fhir">
+  <language value="English"/>
+  <request>
+    <type value="Order"/>
+    <reference value="order/@example"/>
+    <display value="order/@example"/>
+  </request>
+  <who>
+    <type value="Organization"/>
+    <reference value="organization/@1832473e-2fe0-452d-abe9-3cdb9879522f"/>
+    <display value="organization/@1832473e-2fe0-452d-abe9-3cdb9879522f"/>
+  </who>
+  <code value="complete"/>
+  <fulfillment>
+    <type value="DiagnosticReport"/>
+    <reference value="diagnosticreport/@101"/>
+    <display value="diagnosticreport/@101"/>
+  </fulfillment>
+</OrderResponse></soaData>
 </rtop2>

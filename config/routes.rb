@@ -12,4 +12,5 @@ Anotherapp::Application.routes.draw do
   post 'medication'  => 'medication#rurl', :defaults => { :format => 'xml' }
   post 'drug'  => 'drug#rurl', :defaults => { :format => 'xml' }
   post 'order'  => 'order#rurl', :defaults => { :format => 'xml' }
+  get '/monitoring'   => "monitor#watch",       :as => :rx_monitoring
 end

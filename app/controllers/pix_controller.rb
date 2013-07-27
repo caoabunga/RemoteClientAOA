@@ -131,7 +131,7 @@ puts " ------------------------ "
 #
       rtop2.add_child(soaData)
       filename = "PixOut.xml"
-      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      filename = File.join(Rails.root, 'public', 'payload-files', filename)
       File.open(filename ,'w') do |f|
       f.puts rtop2.to_xml
     end

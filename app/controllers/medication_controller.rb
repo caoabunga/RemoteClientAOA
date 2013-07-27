@@ -2,11 +2,14 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 require 'figaro'
+require 'pusher'
 
 class MedicationController < ApplicationController
 
   def rurl
     @PATIENT_HISTORY_URL =  ENV["ITEC_PATIENT_HISTORY_URL"]
+    Pusher.url = ENV["PUSHER_URL"]
+
     logger.debug "Using Patient History URL: " +  @PATIENT_HISTORY_URL
 
     @error = "Success - patient history lookup"
@@ -85,7 +88,7 @@ class MedicationController < ApplicationController
     end
 
     filename = "MedicationOut.xml"
-    filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+    filename = File.join(Rails.root, 'public', 'payload-files', filename)
     File.open(filename, 'w') do |f|
       f.puts @requestXMLDoc.to_xml
     end
@@ -101,6 +104,9 @@ class MedicationController < ApplicationController
       @error = message 
       logger.debug @error
     end
+    Pusher['test_channel'].trigger('my_event', {
+      message: "<label for=\"xml-container\">Medication History Lookup Response:</label><textarea id=\"xml-container\">" + @requestXMLDoc.to_xml + "</textarea>"
+    })
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }
       #format.json { render :json=>@patients }

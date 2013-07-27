@@ -1,7 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'nokogiri'
-
+require 'pusher'
 require 'helper_utils'
 
 @error = 'Success!'
@@ -13,13 +13,14 @@ class OrderController < ApplicationController
     @error = 'Success - order medication prescription'
     @MEDICATION_PRESCRIPTION_URL = 'http://web03:8080/fhirprototype/webresources/medicationprescription'
     @ORDER_URL = 'http://web03:8080/fhirprototype/webresources/order'
+    Pusher.url = ENV["PUSHER_URL"]
     requestBodyXML = request.body.read;
     logger.debug 'Hello OrderController!'
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 
     filename = "OrderIn.xml"
-    filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+    filename = File.join(Rails.root, 'public', 'payload-files', filename)
     File.open(filename, 'w') do |f|
       f.puts @requestXMLDoc.to_xml
     end
@@ -77,7 +78,7 @@ begin
       @requestXMLDoc.xpath('//orderResponse').remove()
       soaData.add_child(orderResponseXML.to_xml)  
       filename = "OrderOut.xml"
-      filename = File.join(Rails.root, 'app','controllers', 'logs', filename)
+      filename = File.join(Rails.root, 'public', 'payload-files', filename)
       File.open(filename, 'w') do |f|
       f.puts @requestXMLDoc.to_xml
     end
@@ -91,9 +92,11 @@ rescue  Exception => e
   @error = message
   logger.debug @error
 end
-
+    Pusher['test_channel'].trigger('my_event', {
+      message: "<label for=\"xml-container\">FHIR Order Response:</label><textarea id=\"xml-container\">" + orderResponseXML.to_xml + "</textarea>"
+    })
     respond_to do |format|
-      format.xml { render :xml => @requestXMLDoc }
+      format.xml { render :xml => orderResponseXML }
       #format.json { render :json=>@patients }
     end
   end

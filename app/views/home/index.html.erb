@@ -1,3 +1,18 @@
+  <script type="text/javascript">
+    // Enable pusher logging - don't include this in production
+    Pusher.log = function(message) {
+      if (window.console && window.console.log) {
+        window.console.log(message);
+      }
+    };
+
+    var pusher = new Pusher('a926c006851d3fdd0e54');
+    var channel = pusher.subscribe('test_channel');
+    channel.bind('my_event', function(data) {
+      $("#awesome-responses").prepend(data.message);
+    });
+  </script>
+
 <div>
       <label for="my-name">Name:</label>
       <input id="my-name" type="text" ng-model="yourName" placeholder="Enter a name here">
