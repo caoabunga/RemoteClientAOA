@@ -9,5 +9,5 @@
     <reference value="organization/@1832473e-2fe0-452d-abe9-3cdb9879522f"/>
   </who>
   <code value="pending"/>
-  <description value"http://10.255.166.15:3000/medication">URL to read the fullfilment queue</description>
+  <description value"http://10.255.201.57:1414/GetMQOutRXOrder">URL to read the fullfilment queue</description>
 </OrderResponse>
