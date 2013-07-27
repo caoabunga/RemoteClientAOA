@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<rtop2>
+  <Order xmlns="http://hl7.org/fhir">
+    <text>
+      <status value="generated"/>
+      <div xmlns="http://www.w3.org/1999/xhtml">Request for Prescription (on patient Donald DUCK @ Acme Healthcare, Inc.
+        MR = 654321)
+      </div>
+    </text>
+    <date value="2012-12-28T09:03:04+11:00"/>
+    <subject>
+      <type value="Patient"/>
+      <reference value="1065"/>
+    </subject>
+    <source>
+      <type value="Practitioner"/>
+      <reference value="practitioner/@example"/>
+    </source>
+    <reason value="Standard admission testing"/>
+
+    <!--   Institution local code meaning "do this today"   -->
+    <when>
+      <code>
+        <coding>
+          <system value="http://acme.com/codes/request-priority"/>
+          <code value="today"/>
+        </coding>
+      </code>
+    </when>
+    <detail>
+      <type value="DiagnosticOrder"/>
+      <reference value="51350285"/>
+    </detail>
+  </Order>
+  <soaData>
+    <!-- after PIX lookup -->
+    <patient ien="101" system="CHCS1"/>
+    <patient ien="7988" system="CHCS2"/>
+    <!-- after patient history -->
+    <medication name="aspirin" code="57344010901"/>
+    <medication name="ibuprofen" code="52125030402"/>
+    <!-- after drug drug interaction -->
+    <drugDrugInteraction>Here is the error message or if empty assume success!</drugDrugInteraction>
+    <orderResponse>Order response goes here</orderResponse>
+  <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple--><medication code="50580012303"/><medication code="50580012303"/><medication code="904525646"/><medication code="904525646"/></soaData>
+
+</rtop2>
