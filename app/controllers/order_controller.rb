@@ -11,19 +11,18 @@ class OrderController < ApplicationController
 
   def rurl
     @error = 'Success - order medication prescription'
-    @MEDICATION_PRESCRIPTION_URL = 'http://web03:8080/fhirprototype/webresources/medicationprescription'
-    @ORDER_URL = 'http://web03:8080/fhirprototype/webresources/order'
+    @MEDICATION_PRESCRIPTION_URL = ENV["MEDICATION_PRESCRIPTION_URL"]
+    @ORDER_URL = ENV["FHIR_ORDER_URL"]
     Pusher.url = ENV["PUSHER_URL"]
-    requestBodyXML = request.body.read;
-    logger.debug 'Hello OrderController!'
+    OrderOutFilename = "OrderOut.xml"
+    OrderInFilename = "OrderIn.xml"
 
+    requestBodyXML = request.body.read;
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 
-    filename = "OrderIn.xml"
-    filename = File.join(Rails.root, 'public', 'payload-files', filename)
-    File.open(filename, 'w') do |f|
-      f.puts @requestXMLDoc.to_xml
-    end
+      logger.debug "saving payload file: " + OrderInFilename
+      HelperUtils.outputPayload(OrderInFilename, @requestXMLDoc.to_xml)
+      logger.debug "saved."
 
     filename = "medicationprescription-example-f001-combivent.xml"
     filename = File.join(Rails.root, 'app','controllers', filename)
@@ -77,14 +76,13 @@ begin
       soaData.add_child(orderComment)
       @requestXMLDoc.xpath('//orderResponse').remove()
       soaData.add_child(orderResponseXML.to_xml)  
-      filename = "OrderOut.xml"
-      filename = File.join(Rails.root, 'public', 'payload-files', filename)
-      File.open(filename, 'w') do |f|
-      f.puts @requestXMLDoc.to_xml
-    end
-      logger.debug @error
+      
+      logger.debug "saving payload file: " + OrderOutFilename
+      HelperUtils.outputPayload(OrderOutFilename, @requestXMLDoc.to_xml)
+      logger.debug "saved."
+
 rescue  Exception => e
-  message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/order test"
+  message = 'Failed making fhir rx order call:' +  e.message
   soaData = @requestXMLDoc.at_css "soaData"
   errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
   errorFromGlueService.content = message

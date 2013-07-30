@@ -9,6 +9,8 @@ class MedicationController < ApplicationController
   def rurl
     @PATIENT_HISTORY_URL =  ENV["ITEC_PATIENT_HISTORY_URL"]
     Pusher.url = ENV["PUSHER_URL"]
+    MedInFilename = "MedicationIn.xml"
+    MedOutFilename = "MedicationOut.xml"
 
     logger.debug "Using Patient History URL: " +  @PATIENT_HISTORY_URL
 
@@ -17,13 +19,10 @@ class MedicationController < ApplicationController
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
     patient = @requestXMLDoc.css('/rtop2/soaData/patient')
-
-    filename = "MedicationIn.xml"
-    filename = File.join(Rails.root, 'public', 'payload-files', filename)
-    File.open(filename, 'w') do |f|
-      f.puts @requestXMLDoc.to_xml
-    end
-
+    
+    logger.debug "saving payload file: " + MedInFilename
+    HelperUtils.outputPayload(MedInFilename, @requestXMLDoc.to_xml)
+    logger.debug "saved."
 
     #
     # assemble medication input xml
@@ -87,16 +86,12 @@ class MedicationController < ApplicationController
       soaData.add_child(medication)
     end
 
-    filename = "MedicationOut.xml"
-    filename = File.join(Rails.root, 'public', 'payload-files', filename)
-    File.open(filename, 'w') do |f|
-      f.puts @requestXMLDoc.to_xml
-    end
-    
-    logger.debug @error
+    logger.debug "saving payload file: " + MedOutFilename
+    HelperUtils.outputPayload(MedOutFilename, @requestXMLDoc.to_xml)
+    logger.debug "saved."
 
     rescue  Exception => e
-      message = 'Failed - ' +  e.message + ".  You can try the POSTMAN http://web03/medication test." 
+      message = 'Failed making patient history call: ' +  e.message
       soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
