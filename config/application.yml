@@ -1,0 +1,20 @@
+# Add account credentials and API keys here.
+# See http://railsapps.github.io/rails-environment-variables.html
+# This file should be listed in .gitignore to keep your settings secret!
+# Each entry sets a local environment variable and overrides ENV variables in the Unix shell.
+# For example, setting:
+# GMAIL_USERNAME: Your_Gmail_Username
+# makes 'Your_Gmail_Username' available as ENV["GMAIL_USERNAME"]
+# Add application configuration variables here, as shown below.
+#
+GMAIL_USERNAME: Your_Username1
+GMAIL_PASSWORD: Your_Password
+ADMIN_NAME: First User
+ADMIN_EMAIL: user@example.com
+ADMIN_PASSWORD: changeme
+ROLES: [admin, user, VIP]
+ITEC_PATIENT_HISTORY_URL: http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple
+DRUG_INTERACTION: http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/
+PUSHER_URL: http://a926c006851d3fdd0e54:1da88863f40eda332483@api.pusherapp.com/apps/50423
+MEDICATION_PRESCRIPTION_URL: http://web03:8080/fhirprototype/webresources/medicationprescription
+FHIR_ORDER_URL: 'http://web03:8080/fhirprototype/webresources/order'
