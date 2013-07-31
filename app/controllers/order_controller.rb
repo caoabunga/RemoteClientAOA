@@ -94,7 +94,12 @@ end
     dateTimeStampNow = DateTime.now.to_s
     dateTimeStampNowMs = DateTime.now.to_i
 
-    coderayMsg = CodeRay.scan( @orderResponseXML, :xml).div
+    #logger.debug "order response xml : " + orderResponseXML.to_xml
+
+    coderayMsg = CodeRay.scan( orderResponseXML.to_xml, :xml).div
+
+    #logger.debug "coderaymsg: " + coderayMsg
+
     message = "<div class=\"accordion-group\">\r\n" + 
     "       <div class=\"accordion-heading fhir-heading \">\r\n" + 
     "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> FHIR Order Response @ " + dateTimeStampNow + "  </a>\r\n" + 
