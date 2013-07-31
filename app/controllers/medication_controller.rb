@@ -100,10 +100,20 @@ class MedicationController < ApplicationController
       @error = message 
       logger.debug @error
     end
-    coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
-    message =  "<label for=\"xml-container\">Medication History Lookup Response:</label>" + coderayMsg
-         Pusher['test_channel'].trigger('my_event', {
-           message: message
+      coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
+      message = "<div class=\"accordion-group\">\r\n" + 
+    "       <div class=\"accordion-heading\">\r\n" + 
+    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapseTwo\"> Medication History Lookup Response </a>\r\n" + 
+    "       </div>\r\n" + 
+    "       <div id=\"collapseTwo\" class=\"accordion-body collapse\">\r\n" + 
+    "         <div class=\"accordion-inner\">\r\n" + 
+            coderayMsg + 
+    "         </div>\r\n" + 
+    "       </div>\r\n" + 
+    "     </div>"
+
+    Pusher['test_channel'].trigger('my_event', {
+      message: message.html_safe
     })
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }

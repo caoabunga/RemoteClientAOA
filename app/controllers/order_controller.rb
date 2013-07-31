@@ -92,12 +92,21 @@ rescue  Exception => e
   logger.debug @error
 end
 
-    coderayMsg = CodeRay.scan( orderResponseXML, :xml).div
-    message =  "<label for=\"xml-container\">FHIR Order Response:</label>" + coderayMsg
-         Pusher['test_channel'].trigger('my_event', {
-           message: message
-    })
-         
+    coderayMsg = CodeRay.scan( @orderResponseXML, :xml).div
+    message = "<div class=\"accordion-group\">\r\n" + 
+    "       <div class=\"accordion-heading\">\r\n" + 
+    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapseTwo\"> FHIR Order Response </a>\r\n" + 
+    "       </div>\r\n" + 
+    "       <div id=\"collapseTwo\" class=\"accordion-body collapse\">\r\n" + 
+    "         <div class=\"accordion-inner\">\r\n" + 
+            coderayMsg + 
+    "         </div>\r\n" + 
+    "       </div>\r\n" + 
+    "     </div>"
+
+    Pusher['test_channel'].trigger('my_event', {
+      message: message.html_safe
+    })     
     respond_to do |format|
       format.xml { render :xml => orderResponseXML }
       #format.json { render :json=>@patients }

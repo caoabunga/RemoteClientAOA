@@ -1,16 +1,13 @@
 #require 'soap/wsdlDriver'
 
-require 'testprintme'
 
-Testprintme.helloworld
+require 'pusher'
+require 'coderay'
+
 class PixController < ApplicationController
-  include Testprintme
+
   def lookup
-    reference = Testprintme::Testclass.new
-    Testprintme::Testclass.helloworld
-    reference.helloworld1
-    reference.helloworld
-    puts "on lookup for " + params[:id]
+
     @patients = User.all
 
 #   client = Savon.client(wsdl: "http://web03:8080/axis2/services/OrderService?wsdl" )
@@ -138,6 +135,8 @@ puts " ------------------------ "
       f.puts rtop2.to_xml
     end
     rescue  Exception => e
+      # TODO FIX ME! bug rtop2 might not exist
+
       message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/medication test" 
       #soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
@@ -147,6 +146,22 @@ puts " ------------------------ "
       logger.debug @error
 
     end
+
+    coderayMsg = CodeRay.scan( rtop2, :xml).div
+    message = "<div class=\"accordion-group\">\r\n" + 
+    "       <div class=\"accordion-heading\">\r\n" + 
+    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapseTwo\"> PIX Lookup Response </a>\r\n" + 
+    "       </div>\r\n" + 
+    "       <div id=\"collapseTwo\" class=\"accordion-body collapse\">\r\n" + 
+    "         <div class=\"accordion-inner\">\r\n" + 
+            coderayMsg + 
+    "         </div>\r\n" + 
+    "       </div>\r\n" + 
+    "     </div>"
+
+    Pusher['test_channel'].trigger('my_event', {
+      message: message.html_safe
+    })     
 
 
     respond_to do |format|
