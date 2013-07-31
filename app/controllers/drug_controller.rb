@@ -27,10 +27,18 @@ class DrugController < ApplicationController
 
     medication = @requestXMLDoc.css('/rtop2/soaData/medication')
 
+    #
+    # get the medication ndc from the original order as well
+    #
+    orderNdcFromRtopReference = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').last['value']
+
     begin
     # call patient history lookup
     #
         csvNdcCode = ""
+        unless orderNdcFromRtopReference.nil?
+          csvNdcCode = orderNdcFromRtopReference + ","
+        end
         medication.each do |m|
           csvNdcCode = csvNdcCode + m['code']
           if m != medication.last

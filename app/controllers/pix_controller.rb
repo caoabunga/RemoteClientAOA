@@ -135,12 +135,14 @@ puts " ------------------------ "
       f.puts rtop2.to_xml
     end
     rescue  Exception => e
-      # TODO FIX ME! bug rtop2 might not exist
-
       message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/medication test" 
       #soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
+      if (rtop2.nil?) 
+        @doc = Nokogiri::XML::Document.parse("<rtop2/>")
+        rtop2 = @doc.at_css "rtop2"
+      end
       rtop2.add_child(errorFromGlueService)
       @error = message 
       logger.debug @error

@@ -26,7 +26,7 @@
       </code>
     </when>
     <detail>
-      <type value="DiagnosticOrder"/>
+      <type value="MedicationPrescription"/>
       <reference value="51350285"/>
     </detail>
   </Order>
