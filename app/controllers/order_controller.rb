@@ -17,6 +17,8 @@ class OrderController < ApplicationController
     Pusher.url = ENV["PUSHER_URL"]
     orderOutFilename = "OrderOut.xml"
     orderInFilename = "OrderIn.xml"
+    medicationPrescriptionInFileName = "medicationPrescriptionIn.xml"
+   
 
     requestBodyXML = request.body.read;
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
@@ -29,8 +31,35 @@ class OrderController < ApplicationController
     filename = File.join(Rails.root, 'app','controllers', filename)
     fileXML = File.read(filename)
     @medicationPrescription = Nokogiri::XML(fileXML)
-
 begin
+  #
+  # munge the <MedicationPrescription/> by adding the NDC from the order
+  #
+  #
+  # get the medication ndc from the original order as well
+  #
+  orderNdcFromRtopReference = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').last['value']
+
+  # remove any existing medication
+  @medicationPrescription.xpath('//fihr:medication', 'fihr' => 'http://hl7.org/fhir').remove()
+
+  # poor man's replace
+  @medicationPrescription.xpath('//fihr:MedicationPrescription', 'fihr' => 'http://hl7.org/fhir').each do |node|
+    medication = Nokogiri::XML::Node.new "medication", @medicationPrescription
+    type = Nokogiri::XML::Node.new "type", @requestXMLDoc
+    type['value']= 'Medication'
+    medication.add_child(type)
+    reference = Nokogiri::XML::Node.new "reference", @requestXMLDoc
+    reference['value']= orderNdcFromRtopReference
+    medication.add_child(reference)
+    display = Nokogiri::XML::Node.new "display", @requestXMLDoc
+    display['value']= "prescribed medication"
+    medication.add_child(display)
+    node.add_child(medication)
+  end
+    logger.debug "saving payload file: " + medicationPrescriptionInFileName
+    HelperUtils.outputPayload(medicationPrescriptionInFileName, @medicationPrescription.to_xml)
+    logger.debug "saved."
 #
 #  save a (pharmacy) order on the server and get an id back:
 #

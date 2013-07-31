@@ -31,7 +31,8 @@
     </reasonForPrescribingCodeableConcept>
     <medication> <!--  Linked to a RESOURCE Medication  -->
         <type value="Medication"/>
-        <reference value="medication/@f001"/>
+         <!--  ACETAMINOPHEN 325MG TAB *OTC* -->
+        <reference value="50580049660"/>
         <display value="prescribed medication"/>
     </medication> 
     <dosageInstructions>

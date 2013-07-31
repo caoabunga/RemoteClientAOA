@@ -27,8 +27,9 @@
       </code>
     </when>
     <detail>
-      <type value="DiagnosticOrder"/>
-      <reference value="51350285"/>
+      <type value="MedicationPrescription"/>
+      <!--  ACETAMINOPHEN 325MG TAB *OTC* -->
+      <reference value="50580049660"/>
     </detail>
   </Order>
   <soaData>
