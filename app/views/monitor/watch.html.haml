@@ -10,6 +10,6 @@
   channel.bind('my_event', function(data) {
     $("#accordion").prepend(data.message);
   });
-%h3 Rx Client Real-Time Messages!
+%h3 Rx Client Real-Time Messages
 %div.container
   %div{:class => "accordion", :id => "accordion"}
