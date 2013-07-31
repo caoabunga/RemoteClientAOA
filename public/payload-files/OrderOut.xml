@@ -29,7 +29,7 @@
             </code>
         </when>
         
-    <detail><type value="MedicationPrescription"/><reference value="2031626638"/></detail></Order>
+    <detail><type value="MedicationPrescription"/><reference value="994787266"/></detail></Order>
     <soaData>
         <!-- after PIX lookup -->
         <patient ien="8001" system="CHCS1"/>

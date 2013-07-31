@@ -9,8 +9,8 @@ class MedicationController < ApplicationController
   def rurl
     @PATIENT_HISTORY_URL =  ENV["ITEC_PATIENT_HISTORY_URL"]
     Pusher.url = ENV["PUSHER_URL"]
-    MedInFilename = "MedicationIn.xml"
-    MedOutFilename = "MedicationOut.xml"
+    medInFilename = "MedicationIn.xml"
+    medOutFilename = "MedicationOut.xml"
 
     logger.debug "Using Patient History URL: " +  @PATIENT_HISTORY_URL
 
@@ -20,8 +20,8 @@ class MedicationController < ApplicationController
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
     patient = @requestXMLDoc.css('/rtop2/soaData/patient')
     
-    logger.debug "saving payload file: " + MedInFilename
-    HelperUtils.outputPayload(MedInFilename, @requestXMLDoc.to_xml)
+    logger.debug "saving payload file: " + medInFilename
+    HelperUtils.outputPayload(medInFilename, @requestXMLDoc.to_xml)
     logger.debug "saved."
 
     #
@@ -86,8 +86,8 @@ class MedicationController < ApplicationController
       soaData.add_child(medication)
     end
 
-    logger.debug "saving payload file: " + MedOutFilename
-    HelperUtils.outputPayload(MedOutFilename, @requestXMLDoc.to_xml)
+    logger.debug "saving payload file: " + medOutFilename
+    HelperUtils.outputPayload(medOutFilename, @requestXMLDoc.to_xml)
     logger.debug "saved."
 
     rescue  Exception => e
@@ -100,7 +100,7 @@ class MedicationController < ApplicationController
       logger.debug @error
     end
     Pusher['test_channel'].trigger('my_event', {
-      message: "<label for=\"xml-container\">Medication History Lookup Response:</label><textarea id=\"xml-container\">" + @requestXMLDoc.to_xml + "</textarea>"
+      message: "<label for=\"xml-container\">Medication History Lookup Response @ " +  DateTime.now .to_s + ":</label><textarea id=\"xml-container\">" + @requestXMLDoc.to_xml + "</textarea>"
     })
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }

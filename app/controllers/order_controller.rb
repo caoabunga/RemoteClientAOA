@@ -14,14 +14,14 @@ class OrderController < ApplicationController
     @MEDICATION_PRESCRIPTION_URL = ENV["MEDICATION_PRESCRIPTION_URL"]
     @ORDER_URL = ENV["FHIR_ORDER_URL"]
     Pusher.url = ENV["PUSHER_URL"]
-    OrderOutFilename = "OrderOut.xml"
-    OrderInFilename = "OrderIn.xml"
+    orderOutFilename = "OrderOut.xml"
+    orderInFilename = "OrderIn.xml"
 
     requestBodyXML = request.body.read;
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 
-      logger.debug "saving payload file: " + OrderInFilename
-      HelperUtils.outputPayload(OrderInFilename, @requestXMLDoc.to_xml)
+      logger.debug "saving payload file: " + orderInFilename
+      HelperUtils.outputPayload(orderInFilename, @requestXMLDoc.to_xml)
       logger.debug "saved."
 
     filename = "medicationprescription-example-f001-combivent.xml"
@@ -77,8 +77,8 @@ begin
       @requestXMLDoc.xpath('//orderResponse').remove()
       soaData.add_child(orderResponseXML.to_xml)  
       
-      logger.debug "saving payload file: " + OrderOutFilename
-      HelperUtils.outputPayload(OrderOutFilename, @requestXMLDoc.to_xml)
+      logger.debug "saving payload file: " + orderOutFilename
+      HelperUtils.outputPayload(orderOutFilename, @requestXMLDoc.to_xml)
       logger.debug "saved."
 
 rescue  Exception => e
@@ -91,7 +91,7 @@ rescue  Exception => e
   logger.debug @error
 end
     Pusher['test_channel'].trigger('my_event', {
-      message: "<label for=\"xml-container\">FHIR Order Response:</label><textarea id=\"xml-container\">" + orderResponseXML.to_xml + "</textarea>"
+      message: "<label for=\"xml-container\">FHIR Order Response @ " +  DateTime.now .to_s + ":</label><textarea id=\"xml-container\">" + orderResponseXML.to_xml + "</textarea>"
     })
     respond_to do |format|
       format.xml { render :xml => orderResponseXML }

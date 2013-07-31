@@ -1,7 +1,5 @@
 #require 'soap/wsdlDriver'
 
-require 'testprintme'
-
 Testprintme.helloworld
 class PixController < ApplicationController
   include Testprintme
@@ -34,10 +32,12 @@ class PixController < ApplicationController
   #
   #require 'REXML/document'
   require 'nokogiri'
+  require 'coderay'
 
   def rurl
     requestBodyXML = request.body.read;
     logger.debug 'Hello PixController!'
+    Pusher.url = ENV["PUSHER_URL"]
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 #@requestXMLDoc.remove_namespaces!
@@ -147,7 +147,11 @@ puts " ------------------------ "
       logger.debug @error
 
     end
-
+    coderayMsg = CodeRay.scan( rtop2.to_xml, :xml).div
+    message =  "<label for=\"xml-container\">Pix Response @ " +  DateTime.now .to_s + ":</label>" + coderayMsg
+    Pusher['test_channel'].trigger('my_event', {
+      message: message
+    })
 
     respond_to do |format|
       format.xml { render :xml => rtop2 }

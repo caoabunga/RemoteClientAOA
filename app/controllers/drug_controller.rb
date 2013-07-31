@@ -69,7 +69,7 @@ class DrugController < ApplicationController
       logger.error @error
     end
     coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
-    message =  "<label for=\"xml-container\">Drug Interaction Response:</label>" + coderayMsg
+    message =  "<label for=\"xml-container\">Drug Interaction Response @ " +  DateTime.now .to_s + ":</label>" + coderayMsg
     Pusher['test_channel'].trigger('my_event', {
       message: message
     })
