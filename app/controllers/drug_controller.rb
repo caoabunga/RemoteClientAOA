@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'nokogiri'
 require 'pusher'
+require 'coderay'
 require 'helper_utils'
 require 'rx_helper'
 
@@ -67,8 +68,10 @@ class DrugController < ApplicationController
       @error = message
       logger.error @error
     end
+    coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
+    message =  "<label for=\"xml-container\">Drug Interaction Response:</label>" + coderayMsg
     Pusher['test_channel'].trigger('my_event', {
-      message: "<label for=\"xml-container\">Drug Interaction Response:</label><textarea id=\"xml-container\">" + @requestXMLDoc.to_xml + "</textarea>"
+      message: message
     })
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }
