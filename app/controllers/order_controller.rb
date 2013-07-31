@@ -91,13 +91,15 @@ rescue  Exception => e
   @error = message
   logger.debug @error
 end
+    dateTimeStampNow = DateTime.now.to_s
+    dateTimeStampNowMs = DateTime.now.to_i
 
     coderayMsg = CodeRay.scan( @orderResponseXML, :xml).div
     message = "<div class=\"accordion-group\">\r\n" + 
     "       <div class=\"accordion-heading\">\r\n" + 
-    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapseTwo\"> FHIR Order Response </a>\r\n" + 
+    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> FHIR Order Response @ " + dateTimeStampNow + "  </a>\r\n" + 
     "       </div>\r\n" + 
-    "       <div id=\"collapseTwo\" class=\"accordion-body collapse\">\r\n" + 
+    "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
     "         <div class=\"accordion-inner\">\r\n" + 
             coderayMsg + 
     "         </div>\r\n" + 

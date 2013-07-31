@@ -146,20 +146,16 @@ puts " ------------------------ "
       logger.debug @error
 
     end
-<<<<<<< HEAD
-    coderayMsg = CodeRay.scan( rtop2.to_xml, :xml).div
-    message =  "<label for=\"xml-container\">Pix Response @ " +  DateTime.now .to_s + ":</label>" + coderayMsg
-    Pusher['test_channel'].trigger('my_event', {
-      message: message
-    })
-=======
+
+    dateTimeStampNow = DateTime.now.to_s
+    dateTimeStampNowMs = DateTime.now.to_i
 
     coderayMsg = CodeRay.scan( rtop2, :xml).div
     message = "<div class=\"accordion-group\">\r\n" + 
     "       <div class=\"accordion-heading\">\r\n" + 
-    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapseTwo\"> PIX Lookup Response </a>\r\n" + 
+    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> PIX Lookup Response @ " + dateTimeStampNow + " </a>\r\n" + 
     "       </div>\r\n" + 
-    "       <div id=\"collapseTwo\" class=\"accordion-body collapse\">\r\n" + 
+    "       <div id=\"collapse" +  dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
     "         <div class=\"accordion-inner\">\r\n" + 
             coderayMsg + 
     "         </div>\r\n" + 
@@ -169,8 +165,6 @@ puts " ------------------------ "
     Pusher['test_channel'].trigger('my_event', {
       message: message.html_safe
     })     
-
->>>>>>> 9ce5d6fd2242d23e661eab2d98f682276c640697
 
     respond_to do |format|
       format.xml { render :xml => rtop2 }
