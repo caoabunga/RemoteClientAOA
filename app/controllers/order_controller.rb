@@ -3,6 +3,7 @@ require 'uri'
 require 'nokogiri'
 require 'pusher'
 require 'helper_utils'
+require 'coderay'
 
 @error = 'Success!'
 
@@ -90,9 +91,22 @@ rescue  Exception => e
   @error = message
   logger.debug @error
 end
+
+    coderayMsg = CodeRay.scan( @orderResponseXML, :xml).div
+    message = "<div class=\"accordion-group\">\r\n" + 
+    "       <div class=\"accordion-heading\">\r\n" + 
+    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapseTwo\"> FHIR Order Response </a>\r\n" + 
+    "       </div>\r\n" + 
+    "       <div id=\"collapseTwo\" class=\"accordion-body collapse\">\r\n" + 
+    "         <div class=\"accordion-inner\">\r\n" + 
+            coderayMsg + 
+    "         </div>\r\n" + 
+    "       </div>\r\n" + 
+    "     </div>"
+
     Pusher['test_channel'].trigger('my_event', {
-      message: "<label for=\"xml-container\">FHIR Order Response @ " +  DateTime.now .to_s + ":</label><textarea id=\"xml-container\">" + orderResponseXML.to_xml + "</textarea>"
-    })
+      message: message.html_safe
+    })     
     respond_to do |format|
       format.xml { render :xml => orderResponseXML }
       #format.json { render :json=>@patients }
