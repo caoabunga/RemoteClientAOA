@@ -3,6 +3,7 @@ require 'uri'
 require 'nokogiri'
 require 'figaro'
 require 'pusher'
+require 'coderay'
 
 class MedicationController < ApplicationController
 
@@ -99,8 +100,10 @@ class MedicationController < ApplicationController
       @error = message 
       logger.debug @error
     end
-    Pusher['test_channel'].trigger('my_event', {
-      message: "<label for=\"xml-container\">Medication History Lookup Response:</label><textarea id=\"xml-container\">" + @requestXMLDoc.to_xml + "</textarea>"
+    coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
+    message =  "<label for=\"xml-container\">Medication History Lookup Response:</label>" + coderayMsg
+         Pusher['test_channel'].trigger('my_event', {
+           message: message
     })
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }
