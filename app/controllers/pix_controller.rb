@@ -152,7 +152,7 @@ puts " ------------------------ "
 
     coderayMsg = CodeRay.scan( rtop2, :xml).div
     message = "<div class=\"accordion-group\">\r\n" + 
-    "       <div class=\"accordion-heading\">\r\n" + 
+    "       <div class=\"accordion-heading pix-heading\">\r\n" + 
     "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> PIX Lookup Response @ " + dateTimeStampNow + " </a>\r\n" + 
     "       </div>\r\n" + 
     "       <div id=\"collapse" +  dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
