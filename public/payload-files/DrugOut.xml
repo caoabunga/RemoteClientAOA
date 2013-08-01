@@ -37,12 +37,7 @@
         <patient ien="8001" system="CHCS1"/>
         <patient ien="1065" system="CHCS2"/>
         <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple-->
-        <medication code="555003302"/>
-        <medication code="38697010101"/>
-        <medication code="115703301"/>
-        <medication code="78005805"/>
-        <medication code="78005805"/>
-        <medication code="591222910"/>
-        <medication code="904201380"/>
-    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,555003302,38697010101,115703301,78005805,78005805,591222910,904201380--><drugDrugInteraction>No Interactions Found</drugDrugInteraction></soaData>
+        <medication code="57344010901"/>
+        <medication code="52125030402"/>
+    <!-- Medication history from http://10.255.166.15:8080/xxxdrugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,57344010901,52125030402--><drugDrugInteraction>&lt;html&gt;&lt;head&gt;&lt;title&gt;Apache Tomcat/7.0.37 - Error report&lt;/title&gt;&lt;style&gt;&lt;!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}A.name {color : black;}HR {color : #525D76;}--&gt;&lt;/style&gt; &lt;/head&gt;&lt;body&gt;&lt;h1&gt;HTTP Status 404 - /xxxdrugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,57344010901,52125030402&lt;/h1&gt;&lt;HR size="1" noshade="noshade"&gt;&lt;p&gt;&lt;b&gt;type&lt;/b&gt; Status report&lt;/p&gt;&lt;p&gt;&lt;b&gt;message&lt;/b&gt; &lt;u&gt;/xxxdrugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,57344010901,52125030402&lt;/u&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;description&lt;/b&gt; &lt;u&gt;The requested resource is not available.&lt;/u&gt;&lt;/p&gt;&lt;HR size="1" noshade="noshade"&gt;&lt;h3&gt;Apache Tomcat/7.0.37&lt;/h3&gt;&lt;/body&gt;&lt;/html&gt;</drugDrugInteraction></soaData>
 </rtop2>
