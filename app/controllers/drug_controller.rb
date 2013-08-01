@@ -85,7 +85,7 @@ class DrugController < ApplicationController
     "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Drug Interaction Response @ " + dateTimeStampNow + "  </a>\r\n" + 
     "       </div>\r\n" + 
     "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
-    "         <div class=\"accordion-inner\">\r\n<textarea>" + 
+    "         <div class=\"accordion-inner\">\r\n<textarea class=\"xml-container\">" + 
             @requestXMLDoc.to_xml.html_safe + 
     "         </textarea></div>\r\n" + 
     "       </div>\r\n" + 
