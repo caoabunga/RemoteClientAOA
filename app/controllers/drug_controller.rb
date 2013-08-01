@@ -35,8 +35,8 @@ class DrugController < ApplicationController
       #
       orderNdcFromRtopReference = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').last['value']
 
-      if (medication.nil? || medication.empty? || orderNdcFromRtopReference.nil? || orderNdcFromRtopReference.empty?)
-          exceptionMessage = 'DrugController - NDC codes are null - /rtop2/soaData/medication or <Order><reference value="NDC_CODE_GOES HERE"/> '
+      if (orderNdcFromRtopReference.nil? || orderNdcFromRtopReference.empty?)
+          exceptionMessage = 'DrugController - Invalid or empty NDC code submitted - /rtop2/soaData/medication or <Order><reference value="NDC_CODE_GOES HERE"/> '
           logger.debug exceptionMessage
           raise Exception,exceptionMessage
       end
