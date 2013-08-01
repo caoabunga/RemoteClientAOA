@@ -78,7 +78,7 @@ class DrugController < ApplicationController
       #
       # Push failure to /monitoring
       #
-      if (cleanResponse != "No interaction found")
+      if (cleanResponse != "No Interactions Found")
         filename = File.join(Rails.root, 'app', 'controllers', drugdrugInteractionOrderResponseFileName)
         fileXML = File.read(filename)
         @drugDrugInteractionResponseXMLDoc = Nokogiri::XML(fileXML)
