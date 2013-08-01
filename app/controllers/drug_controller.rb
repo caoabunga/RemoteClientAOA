@@ -15,6 +15,7 @@ class DrugController < ApplicationController
     Pusher.url = ENV["PUSHER_URL"]
     drugInFilename = "DrugIn.xml"
     drugOutFilename = "DrugOut.xml"
+    drugdrugInteractionOrderResponseFileName = "drugdrugInteractionOrderResponse.xml"
 
     logger.debug 'Hello DrugController, using: '+ @DRUG_DRUG_INTERACTION
     requestBodyXML = request.body.read;
@@ -52,9 +53,9 @@ class DrugController < ApplicationController
         logger.debug("our response back is " + responseBody)
 
         cleanResponse = responseBody.to_s.chomp(']')
-    #
-    # insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow
-    #
+        #
+        # insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow
+        #
 
         soaData = @requestXMLDoc.at_css "soaData"
         medicationPrescriptionComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Medication history from ' + urlString
@@ -62,7 +63,8 @@ class DrugController < ApplicationController
         drugDrugInteraction = Nokogiri::XML::Node.new "drugDrugInteraction", @requestXMLDoc
         drugDrugInteraction.content= cleanResponse
         soaData.add_child(drugDrugInteraction)
-      
+
+        end
         logger.debug "saving payload file: " + drugOutFilename
         HelperUtils.outputPayload(drugOutFilename, @requestXMLDoc.to_xml)
         logger.debug "saved."
@@ -75,11 +77,35 @@ class DrugController < ApplicationController
       soaData.add_child(errorFromGlueService)
       @error = message
       logger.error @error
-    end
+  end
+
+      coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
+      #
+      # Push failure to /monitoring
+      #
+      if (cleanResponse != "No interaction found")
+        filename = File.join(Rails.root, 'app','controllers', drugdrugInteractionOrderResponseFileName)
+        fileXML = File.read(filename)
+        @drugDrugInteractionResponseXMLDoc = Nokogiri::XML(fileXML)
+        # remove any existing medication
+        @drugDrugInteractionResponseXMLDoc.xpath('//fihr:description', 'fihr' => 'http://hl7.org/fhir').remove()
+
+        # poor man's replace
+        @drugDrugInteractionResponseXMLDoc.xpath('//fihr:OrderResponse', 'fihr' => 'http://hl7.org/fhir').each do |node|
+        description = Nokogiri::XML::Node.new "description", @drugDrugInteractionResponseXMLDoc
+        description['value'] = "http://10.255.201.57:1414/GetMQOutRXOrder"
+        description.content = cleanResponse
+        @drugDrugInteractionResponseXML = @drugDrugInteractionResponseXMLDoc.root
+        @drugDrugInteractionResponseXML.add_child(description)
+          #
+          #  change the message being pushed to the drug interaction <OrderResponse>
+          #
+        coderayMsg = CodeRay.scan( @drugDrugInteractionResponseXMLDoc.to_xml, :xml).div
+      end
+
         dateTimeStampNow = DateTime.now.to_s
         dateTimeStampNowMs = DateTime.now.to_i
 
-        coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
         message = "<div class=\"accordion-group\">\r\n" + 
     "       <div class=\"accordion-heading drug-heading\">\r\n" + 
     "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Drug Interaction Response @ " + dateTimeStampNow + "  </a>\r\n" + 

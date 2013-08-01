@@ -138,7 +138,7 @@ puts " ------------------------ "
       f.puts rtop2.to_xml
     end
     rescue  Exception => e
-      message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/medication test" 
+      message = 'Failed - ' +  e.message + " You can try the POSTMAN http://web03/pix test"
       #soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
