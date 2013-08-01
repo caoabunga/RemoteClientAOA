@@ -110,18 +110,21 @@ puts " ------------------------ "
       rtop2.add_child(order)
 
 #
+# TODO FIX ME!  CHCS1 Hard coded
 # create <soaData/> node and add the patient dat
 #
+      logger.debug 'Warining! CHCS1 Hard coded'
+      
       soaData = Nokogiri::XML::Node.new "soaData", @doc
       pixComment = Nokogiri::XML::Comment.new @doc, ' PIX lookup data '
       soaData.add_child(pixComment)
 
       patient = Nokogiri::XML::Node.new "patient", @doc
-      patient['ien']= '101'
+      patient['ien']= patientId
       patient['system']= 'CHCS1'
       soaData.add_child(patient)
       patient = Nokogiri::XML::Node.new "patient", @doc
-      patient['ien']= '7988'
+      patient['ien']= patientId
       patient['system']= 'CHCS2'
       soaData.add_child(patient)
 

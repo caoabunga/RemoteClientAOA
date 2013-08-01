@@ -52,6 +52,9 @@ begin
     reference = Nokogiri::XML::Node.new "reference", @requestXMLDoc
     reference['value']= orderNdcFromRtopReference
     medication.add_child(reference)
+    medicationComment = "ACETAMINOPHEN 325MG TAB *OTC*"
+    medicationPrescriptionCommentXML = Nokogiri::XML::Comment.new @requestXMLDoc, medicationComment 
+    medication.add_child(medicationPrescriptionCommentXML)
     display = Nokogiri::XML::Node.new "display", @requestXMLDoc
     display['value']= "prescribed medication"
     medication.add_child(display)
