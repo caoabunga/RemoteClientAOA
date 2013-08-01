@@ -12,7 +12,7 @@
         <date value="2012-12-28T09:03:04+11:00"/>
         <subject>
             <type value="Patient"/>
-            <reference value="1065"/>
+            <reference value="7965"/>
         </subject>
         <source>
             <type value="Practitioner"/>
@@ -29,7 +29,7 @@
             </code>
         </when>
         
-    <detail><type value="MedicationPrescription"/><reference value="1534864505"/></detail></Order>
+    <detail><type value="MedicationPrescription"/><reference value="2121129309"/></detail></Order>
     <soaData>
         <!-- after PIX lookup -->
         <patient ien="8001" system="CHCS1"/>
@@ -44,7 +44,7 @@
         <medication code="904201380"/>
         <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/555003302,38697010101,115703301,78005805,78005805,591222910,904201380-->
         <drugDrugInteraction>o Interactions Found</drugDrugInteraction>
-    <!-- Medication prescription from http://web03:8080/fhirprototype/webresources/medicationprescription--><!-- Order from http://web03:8080/fhirprototype/webresources/order--><OrderResponse xmlns="http://hl7.org/fhir">
+    <!-- Medication prescription from http://web03:9080/fhirprototype/webresources/medicationprescription--><!-- Order from http://web03:9080/fhirprototype/webresources/order--><OrderResponse xmlns="http://hl7.org/fhir">
   <language value="English"/>
   <request>
     <type value="Order"/>
