@@ -142,7 +142,7 @@ puts " ------------------------ "
       #soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
-      if (rtop2.nil?) 
+      if (rtop2.nil? || rtop2.empty?)
         @doc = Nokogiri::XML::Document.parse("<rtop2/>")
         rtop2 = @doc.at_css "rtop2"
       end
