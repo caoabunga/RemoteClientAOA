@@ -18,57 +18,57 @@ class OrderController < ApplicationController
     orderOutFilename = "OrderOut.xml"
     orderInFilename = "OrderIn.xml"
     medicationPrescriptionInFileName = "medicationPrescriptionIn.xml"
-   
+
 
     requestBodyXML = request.body.read;
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
 
-      logger.debug "saving payload file: " + orderInFilename
-      HelperUtils.outputPayload(orderInFilename, @requestXMLDoc.to_xml)
-      logger.debug "saved."
+    logger.debug "saving payload file: " + orderInFilename
+    HelperUtils.outputPayload(orderInFilename, @requestXMLDoc.to_xml)
+    logger.debug "saved."
 
     filename = "medicationprescription-example-f001-combivent.xml"
-    filename = File.join(Rails.root, 'app','controllers', filename)
+    filename = File.join(Rails.root, 'app', 'controllers', filename)
     fileXML = File.read(filename)
     @medicationPrescription = Nokogiri::XML(fileXML)
-begin
-  #
-  # munge the <MedicationPrescription/> by adding the NDC from the order
-  #
-  #
-  # get the medication ndc from the original order as well
-  #
-  orderNdcFromRtopReference = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').last['value']
+    begin
+      #
+      # munge the <MedicationPrescription/> by adding the NDC from the order
+      #
+      #
+      # get the medication ndc from the original order as well
+      #
+      orderNdcFromRtopReference = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').last['value']
 
-  # remove any existing medication
-  @medicationPrescription.xpath('//fihr:medication', 'fihr' => 'http://hl7.org/fhir').remove()
+      # remove any existing medication
+      @medicationPrescription.xpath('//fihr:medication', 'fihr' => 'http://hl7.org/fhir').remove()
 
-  # poor man's replace
-  @medicationPrescription.xpath('//fihr:MedicationPrescription', 'fihr' => 'http://hl7.org/fhir').each do |node|
-    medication = Nokogiri::XML::Node.new "medication", @medicationPrescription
-    type = Nokogiri::XML::Node.new "type", @requestXMLDoc
-    type['value']= 'Medication'
-    medication.add_child(type)
-    reference = Nokogiri::XML::Node.new "reference", @requestXMLDoc
-    reference['value']= orderNdcFromRtopReference
-    medication.add_child(reference)
-    medicationComment = "ACETAMINOPHEN 325MG TAB *OTC*"
-    medicationPrescriptionCommentXML = Nokogiri::XML::Comment.new @requestXMLDoc, medicationComment 
-    medication.add_child(medicationPrescriptionCommentXML)
-    display = Nokogiri::XML::Node.new "display", @requestXMLDoc
-    display['value']= "prescribed medication"
-    medication.add_child(display)
-    node.add_child(medication)
-  end
-    logger.debug "saving payload file: " + medicationPrescriptionInFileName
-    HelperUtils.outputPayload(medicationPrescriptionInFileName, @medicationPrescription.to_xml)
-    logger.debug "saved."
-#
-#  save a (pharmacy) order on the server and get an id back:
-#
-      responseBody = HelperUtils.do_post( @MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
-#  puts responseBody
-# medicationPresciptionId = '797427773'
+      # poor man's replace
+      @medicationPrescription.xpath('//fihr:MedicationPrescription', 'fihr' => 'http://hl7.org/fhir').each do |node|
+        medication = Nokogiri::XML::Node.new "medication", @medicationPrescription
+        type = Nokogiri::XML::Node.new "type", @requestXMLDoc
+        type['value']= 'Medication'
+        medication.add_child(type)
+        reference = Nokogiri::XML::Node.new "reference", @requestXMLDoc
+        reference['value']= orderNdcFromRtopReference
+        medication.add_child(reference)
+        medicationComment = "ACETAMINOPHEN 325MG TAB *OTC*"
+        medicationPrescriptionCommentXML = Nokogiri::XML::Comment.new @requestXMLDoc, medicationComment
+        medication.add_child(medicationPrescriptionCommentXML)
+        display = Nokogiri::XML::Node.new "display", @requestXMLDoc
+        display['value']= "prescribed medication"
+        medication.add_child(display)
+        node.add_child(medication)
+      end
+      logger.debug "saving payload file: " + medicationPrescriptionInFileName
+      HelperUtils.outputPayload(medicationPrescriptionInFileName, @medicationPrescription.to_xml)
+      logger.debug "saved."
+      #
+      #  save a (pharmacy) order on the server and get an id back:
+      #
+      responseBody = HelperUtils.do_post(@MEDICATION_PRESCRIPTION_URL, @medicationPrescription.to_xml)
+      #  puts responseBody
+      # medicationPresciptionId = '797427773'
       medicationPresciptionId = responseBody
 
 #
@@ -108,44 +108,46 @@ begin
       orderComment = Nokogiri::XML::Comment.new @requestXMLDoc, ' Order from ' + @ORDER_URL
       soaData.add_child(orderComment)
       @requestXMLDoc.xpath('//orderResponse').remove()
-      soaData.add_child(orderResponseXML.to_xml)  
-      
+      soaData.add_child(orderResponseXML.to_xml)
+
       logger.debug "saving payload file: " + orderOutFilename
       HelperUtils.outputPayload(orderOutFilename, @requestXMLDoc.to_xml)
       logger.debug "saved."
 
-rescue  Exception => e
-  message = 'Failed making fhir rx order call:' +  e.message
-  soaData = @requestXMLDoc.at_css "soaData"
-  errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
-  errorFromGlueService.content = message
-  soaData.add_child(errorFromGlueService)
-  @error = message
-  logger.debug @error
-end
-    dateTimeStampNow = DateTime.now.to_s
-    dateTimeStampNowMs = DateTime.now.to_i
+      dateTimeStampNow = DateTime.now.to_s
+      dateTimeStampNowMs = DateTime.now.to_i
 
-    #logger.debug "order response xml : " + orderResponseXML.to_xml
+      #logger.debug "order response xml : " + orderResponseXML.to_xml
 
-    coderayMsg = CodeRay.scan( orderResponseXML.to_xml, :xml).div
+      coderayMsg = CodeRay.scan(orderResponseXML.to_xml, :xml).div
 
-    #logger.debug "coderaymsg: " + coderayMsg
+      #logger.debug "coderaymsg: " + coderayMsg
 
-    message = "<div class=\"accordion-group\">\r\n" + 
-    "       <div class=\"accordion-heading fhir-heading \">\r\n" + 
-    "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> FHIR Order Response @ " + dateTimeStampNow + "  </a>\r\n" + 
-    "       </div>\r\n" + 
-    "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
-    "         <div class=\"accordion-inner\">\r\n" + 
-            coderayMsg + 
-    "         </div>\r\n" + 
-    "       </div>\r\n" + 
-    "     </div>"
+      message = "<div class=\"accordion-group\">\r\n" +
+          "       <div class=\"accordion-heading fhir-heading \">\r\n" +
+          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> FHIR Order Response @ " + dateTimeStampNow + "  </a>\r\n" +
+          "       </div>\r\n" +
+          "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
+          "         <div class=\"accordion-inner\">\r\n" +
+          coderayMsg +
+          "         </div>\r\n" +
+          "       </div>\r\n" +
+          "     </div>"
 
-    Pusher['test_channel'].trigger('my_event', {
-      message: message.html_safe
-    })     
+      Pusher['test_channel'].trigger('my_event', {
+          message: message.html_safe
+      })
+
+    rescue Exception => e
+      message = 'Failed in the order controller - making fhir rx order call? ' + e.message + e.backtrace.join("\n")
+      soaData = @requestXMLDoc.at_css "soaData"
+      errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
+      errorFromGlueService.content = message
+      soaData.add_child(errorFromGlueService)
+      @error = message
+      logger.debug @error
+    end
+
     respond_to do |format|
       format.xml { render :xml => orderResponseXML }
       #format.json { render :json=>@patients }
