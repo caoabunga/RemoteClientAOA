@@ -29,7 +29,7 @@
             </code>
         </when>
         
-    <detail><type value="MedicationPrescription"/><reference value="230138128"/></detail></Order>
+    <detail><type value="MedicationPrescription"/><reference value="891656279"/></detail></Order>
     <soaData>
         <!-- after PIX lookup -->
         <patient ien="8001" system="CHCS1"/>
@@ -57,7 +57,7 @@
   <code value="complete"/>
   <fulfillment>
     <type value="MedicationPrescription"/>
-    <reference value="230138128"/>
+    <reference value="891656279"/>
   </fulfillment>
 </OrderResponse></soaData>
 </rtop2>
