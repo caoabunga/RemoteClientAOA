@@ -120,7 +120,7 @@ puts " ------------------------ "
       soaData.add_child(pixComment)
 
       patient = Nokogiri::XML::Node.new "patient", @doc
-      patient['ien']= '101'
+      patient['ien']= patientId
       patient['system']= 'CHCS1'
       soaData.add_child(patient)
       patient = Nokogiri::XML::Node.new "patient", @doc
