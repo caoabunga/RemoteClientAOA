@@ -29,7 +29,7 @@
         </when>
         <detail>
             <type value="DiagnosticOrder"/>
-            <reference value="51350285"/>
+            <reference value="57344010901"/>
         </detail>
     </Order>
     <soaData>
@@ -39,5 +39,5 @@
         <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple-->
         <medication code="57344010901"/>
         <medication code="52125030402"/>
-    <!-- Medication history from http://10.255.166.15:8080/xxxdrugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,57344010901,52125030402--><drugDrugInteraction>&lt;html&gt;&lt;head&gt;&lt;title&gt;Apache Tomcat/7.0.37 - Error report&lt;/title&gt;&lt;style&gt;&lt;!--H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}A {color : black;}A.name {color : black;}HR {color : #525D76;}--&gt;&lt;/style&gt; &lt;/head&gt;&lt;body&gt;&lt;h1&gt;HTTP Status 404 - /xxxdrugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,57344010901,52125030402&lt;/h1&gt;&lt;HR size="1" noshade="noshade"&gt;&lt;p&gt;&lt;b&gt;type&lt;/b&gt; Status report&lt;/p&gt;&lt;p&gt;&lt;b&gt;message&lt;/b&gt; &lt;u&gt;/xxxdrugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,57344010901,52125030402&lt;/u&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;description&lt;/b&gt; &lt;u&gt;The requested resource is not available.&lt;/u&gt;&lt;/p&gt;&lt;HR size="1" noshade="noshade"&gt;&lt;h3&gt;Apache Tomcat/7.0.37&lt;/h3&gt;&lt;/body&gt;&lt;/html&gt;</drugDrugInteraction></soaData>
+    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/57344010901,57344010901,52125030402--><drugDrugInteraction>[Scope = 3 (resolve INGREDIENT_KIND entities to the corresponding DRUG_KIND/Ingredient entities + resolve DRUG_KIND/VA Product entities to their constitutive DRUG_KIND/Ingredient entities + explore the specific salts of a non-salt form as necessary) Drug1 (nui = N0000150577), IBUPROFEN 200MG TAB, is DRUG_KIND Drug2 (nui = N0000162828), LITHIUM CARBONATE 150MG CAP,UD, is DRUG_KIND Drug1 is resolved to IBUPROFEN, Drug2 is resolved to LITHIUM and interaction asserted in NDF-RT between IBUPROFEN and LITHIUM through IBUPROFEN/LITHIUM.</drugDrugInteraction></soaData>
 </rtop2>

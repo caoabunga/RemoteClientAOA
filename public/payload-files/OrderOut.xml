@@ -29,7 +29,7 @@
             </code>
         </when>
         
-    <detail><type value="MedicationPrescription"/><reference value="629482564"/></detail></Order>
+    <detail><type value="MedicationPrescription"/><reference value="230138128"/></detail></Order>
     <soaData>
         <!-- after PIX lookup -->
         <patient ien="8001" system="CHCS1"/>
@@ -48,19 +48,16 @@
   <language value="English"/>
   <request>
     <type value="Order"/>
-    <reference value="order/@example"/>
-    <display value="order/@example"/>
+    <reference value="1065"/>
   </request>
   <who>
     <type value="Organization"/>
     <reference value="organization/@1832473e-2fe0-452d-abe9-3cdb9879522f"/>
-    <display value="organization/@1832473e-2fe0-452d-abe9-3cdb9879522f"/>
   </who>
   <code value="complete"/>
   <fulfillment>
-    <type value="DiagnosticReport"/>
-    <reference value="diagnosticreport/@101"/>
-    <display value="diagnosticreport/@101"/>
+    <type value="MedicationPrescription"/>
+    <reference value="230138128"/>
   </fulfillment>
 </OrderResponse></soaData>
 </rtop2>

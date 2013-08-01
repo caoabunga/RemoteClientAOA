@@ -29,7 +29,7 @@
         </when>
         <detail>
             <type value="DiagnosticOrder"/>
-            <reference value=""/>
+            <reference value="57344010901"/>
         </detail>
     </Order>
     <soaData>

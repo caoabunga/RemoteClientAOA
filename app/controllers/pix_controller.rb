@@ -51,26 +51,7 @@ class PixController < ApplicationController
       endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
       wsdl = "http://web03/IHE/PIXManager.wsdl"
       #wsdl="http://www.sandiegoimmunizationregistry.org/PIXManager?wsdl"
-      endpoint = "http://10.255.166.17:57772/        dateTimeStampNow = DateTime.now.to_s
-        dateTimeStampNowMs = DateTime.now.to_i
-
-      coderayMsg = CodeRay.scan( @requestXMLDoc.to_xml, :xml).div
-      message = "<div class=\"accordion-group\">\r\n" +
-          "       <div class=\"accordion-heading med-heading\">\r\n" +
-          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\"  href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Medication History Lookup Response @ " + dateTimeStampNow + "  </a>\r\n" +
-          "       </div>\r\n" +
-          "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
-          "         <div class=\"accordion-inner\">\r\n<textarea class=\"xml-container\">" +
-          @requestXMLDoc.to_xml.html_safe  +
-          "         </textarea></div>\r\n" +
-          "       </div>\r\n" +
-          "     </div>"
-
-      logger.debug message.html_safe
-      logger.debug "try to send to pusher now"
-      Pusher['test_channel'].trigger('my_event', {
-          message: message.html_safe
-      })csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
+      endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
       content_type = 'application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
       client = Savon.client(wsdl: wsdl,
                             endpoint: endpoint,
