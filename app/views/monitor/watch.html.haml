@@ -8,7 +8,7 @@
   var pusher = new Pusher('a926c006851d3fdd0e54');
   var channel = pusher.subscribe('test_channel');
   channel.bind('my_event', function(data) {
-    $("#accordion").prepend(data.message);
+    $("#accordion").append(data.message);
   });
 %h3 Rx Client Real-Time Messages
 %div.container
