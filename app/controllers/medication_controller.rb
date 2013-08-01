@@ -60,9 +60,6 @@ class MedicationController < ApplicationController
         cleanResponse = response.body.to_s[1..-1].chomp(']')
 
 
-    #
-    # TODO extract medications
-    #
         firstXML, *lastXML = cleanResponse.split(/, /)
         puts firstXML
         puts *lastXML

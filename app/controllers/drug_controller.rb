@@ -51,7 +51,7 @@ class DrugController < ApplicationController
         responseBody = HelperUtils.do_get(urlString)
         logger.debug("our response back is " + responseBody)
 
-        cleanResponse = responseBody.to_s[1..-1].chomp(']')
+        cleanResponse = responseBody.to_s.chomp(']')
     #
     # insert drug warning  into the RTOP2_FIHRRxOrder.xml to form the response back to the message flow
     #
