@@ -89,13 +89,14 @@ class MedicationController < ApplicationController
     logger.debug "saved."
 
     rescue  Exception => e
-      message = 'Failed making patient history call: ' +  e.message
-      soaData = @requestXMLDoc.at_css "soaData"
-      errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
-      errorFromGlueService.content = message
-      soaData.add_child(errorFromGlueService)
+      message = 'Failed making patient history call: ' +  e.backtrace.join("\n")
+      #soaData = @requestXMLDoc.at_css "soaData"
+      #errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
+      #errorFromGlueService.content = message
+      #soaData.add_child(errorFromGlueService)
       @error = message 
       logger.debug @error
+
     end
         dateTimeStampNow = DateTime.now.to_s
         dateTimeStampNowMs = DateTime.now.to_i
@@ -106,15 +107,18 @@ class MedicationController < ApplicationController
     "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\"  href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Medication History Lookup Response @ " + dateTimeStampNow + "  </a>\r\n" + 
     "       </div>\r\n" + 
     "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
-    "         <div class=\"accordion-inner\">\r\n" + 
-            coderayMsg + 
-    "         </div>\r\n" + 
+    "         <div class=\"accordion-inner\">\r\n<textarea>" + 
+            @requestXMLDoc.to_xml.html_safe  + 
+    "         </textarea></div>\r\n" + 
     "       </div>\r\n" + 
     "     </div>"
 
+    logger.debug message.html_safe
+    logger.debug "try to send to pusher now"
     Pusher['test_channel'].trigger('my_event', {
       message: message.html_safe
     })
+    logger.debug "----"
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }
       #format.json { render :json=>@patients }

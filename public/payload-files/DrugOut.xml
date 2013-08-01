@@ -44,5 +44,5 @@
         <medication code="78005805"/>
         <medication code="591222910"/>
         <medication code="904201380"/>
-    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,555003302,38697010101,115703301,78005805,78005805,591222910,904201380--><drugDrugInteraction>o Interactions Found</drugDrugInteraction></soaData>
+    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,555003302,38697010101,115703301,78005805,78005805,591222910,904201380--><drugDrugInteraction>No Interactions Found</drugDrugInteraction></soaData>
 </rtop2>

@@ -12,7 +12,7 @@
         <date value="2012-12-28T09:03:04+11:00"/>
         <subject>
             <type value="Patient"/>
-            <reference value="7965"/>
+            <reference value="1065"/>
         </subject>
         <source>
             <type value="Practitioner"/>
@@ -29,7 +29,7 @@
             </code>
         </when>
         
-    <detail><type value="MedicationPrescription"/><reference value="2121129309"/></detail></Order>
+    <detail><type value="MedicationPrescription"/><reference value="2123254234"/></detail></Order>
     <soaData>
         <!-- after PIX lookup -->
         <patient ien="8001" system="CHCS1"/>

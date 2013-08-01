@@ -68,7 +68,7 @@ class DrugController < ApplicationController
         logger.debug "saved."
 
     rescue Exception => e
-      message = 'Failed making patient history call: ' +  e
+      message = 'Failed making patient history call: '
       soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
@@ -85,15 +85,17 @@ class DrugController < ApplicationController
     "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Drug Interaction Response @ " + dateTimeStampNow + "  </a>\r\n" + 
     "       </div>\r\n" + 
     "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" + 
-    "         <div class=\"accordion-inner\">\r\n" + 
-            coderayMsg + 
-    "         </div>\r\n" + 
+    "         <div class=\"accordion-inner\">\r\n<textarea>" + 
+            @requestXMLDoc.to_xml.html_safe + 
+    "         </textarea></div>\r\n" + 
     "       </div>\r\n" + 
     "     </div>"
-
+    logger.debug("try to send drug response to pusher: ")
+    logger.debug message.html_safe
     Pusher['test_channel'].trigger('my_event', {
       message: message.html_safe
     })
+    logger.debug "-- done --"
     respond_to do |format|
       format.xml { render :xml => @requestXMLDoc }
       #format.json { render :json=>@patients }
