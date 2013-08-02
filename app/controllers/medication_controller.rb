@@ -94,9 +94,9 @@ class MedicationController < ApplicationController
       coderayMsg = CodeRay.scan(@requestXMLDoc.to_xml, :xml).div
       message = "<div class=\"accordion-group\">\r\n" +
           "       <div class=\"accordion-heading med-heading\">\r\n" +
-          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\"  href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Medication History Lookup Response @ " + dateTimeStampNow + "  </a>\r\n" +
+          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\"  href=\"#pixSection" + dateTimeStampNowMs.to_s + "\"> Medication History Lookup Response @ " + dateTimeStampNow + "  </a>\r\n" +
           "       </div>\r\n" +
-          "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
+          "       <div id=\"pixSection" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
           "         <div class=\"accordion-inner\">\r\n<textarea class=\"xml-container\">" +
           @requestXMLDoc.to_xml.html_safe +
           "         </textarea></div>\r\n" +
