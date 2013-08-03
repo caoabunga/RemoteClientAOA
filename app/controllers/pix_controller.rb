@@ -1,6 +1,7 @@
 #require 'soap/wsdlDriver'
 require 'pusher'
 require 'coderay'
+require 'nokogiri'
 
 class PixController < ApplicationController
 
@@ -47,6 +48,17 @@ class PixController < ApplicationController
 
 #  TODO munge the soap request xml to use the patient id and or firstname, last name from above
     begin
+
+
+      orderNdcFromRtopReference = @requestXMLDoc.xpath('//fhir:reference', 'fhir' => 'http://hl7.org/fhir').last['value']
+
+      if (orderNdcFromRtopReference.nil? || orderNdcFromRtopReference.empty?)
+          exceptionMessage = 'Invalid or empty NDC code submitted - /rtop2/soaData/medication or <Order><reference value="NDC_CODE_GOES HERE"/> '
+          logger.debug exceptionMessage
+          raise Exception,exceptionMessage
+      end
+
+
       wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
       endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
       wsdl = "http://web03/IHE/PIXManager.wsdl"
@@ -122,23 +134,15 @@ puts " ------------------------ "
       dateTimeStampNowMs = DateTime.now.to_i
 
       coderayMsg = CodeRay.scan(rtop2, :xml).div
-      message = "<div class=\"accordion-group\">\r\n" +
-          "       <div class=\"accordion-heading pix-heading\">\r\n" +
-          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> PIX Lookup Response @ " + dateTimeStampNow + " </a>\r\n" +
-          "       </div>\r\n" +
-          "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
-          "         <div class=\"accordion-inner\">\r\n" +
-          coderayMsg +
-          "         </div>\r\n" +
-          "       </div>\r\n" +
-          "     </div>"
+      title = "PIX Lookup Response @ " + dateTimeStampNow 
+      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, coderayMsg, title, "pix-heading", true)
 
       Pusher['test_channel'].trigger('my_event', {
           message: message.html_safe
       })
 
     rescue Exception => e
-      message = 'Failed - in the pix controller ' + e.message + e.backtrace.join("\n")
+      message = 'Failed - in the pix controller ' + e.message
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
       if (rtop2.nil? || rtop2.empty?)
@@ -148,6 +152,13 @@ puts " ------------------------ "
       rtop2.add_child(errorFromGlueService)
       @error = message
       logger.debug @error
+
+
+      title = "PIX Lookup Error @ " + DateTime.now.to_s 
+      uiMessage = HelperUtils.buildPusherMessage("pixSection" + DateTime.now.to_i.to_s, @error, title, "pix-heading", true)
+      Pusher['test_channel'].trigger('my_event', {
+          message: uiMessage.html_safe
+      })
 
     end
 

@@ -121,18 +121,8 @@ class OrderController < ApplicationController
 
       coderayMsg = CodeRay.scan(orderResponseXML.to_xml, :xml).div
 
-      #logger.debug "coderaymsg: " + coderayMsg
-
-      message = "<div class=\"accordion-group\">\r\n" +
-          "       <div class=\"accordion-heading fhir-heading \">\r\n" +
-          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> FHIR Order Response @ " + dateTimeStampNow + "  </a>\r\n" +
-          "       </div>\r\n" +
-          "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
-          "         <div class=\"accordion-inner\">\r\n" +
-          coderayMsg +
-          "         </div>\r\n" +
-          "       </div>\r\n" +
-          "     </div>"
+      title = "FHIR Order Response @ " + dateTimeStampNow 
+      message = HelperUtils.buildPusherMessage("fhirSection" + dateTimeStampNowMs.to_s, coderayMsg, title, "fhir-heading", true)
 
       Pusher['test_channel'].trigger('my_event', {
           message: message.html_safe
@@ -146,6 +136,14 @@ class OrderController < ApplicationController
       soaData.add_child(errorFromGlueService)
       @error = message
       logger.debug @error
+
+      dateTimeStampNow = DateTime.now.to_s
+      dateTimeStampNowMs = DateTime.now.to_i
+      title = "FHIR Order Error @ " + DateTime.now.to_s 
+      uiMessage = HelperUtils.buildPusherMessage("fhirSection" + DateTime.now.to_i.to_s, @error, title, "fhir-heading", true)
+      Pusher['test_channel'].trigger('my_event', {
+          message: uiMessage.html_safe
+      })
     end
 
     respond_to do |format|

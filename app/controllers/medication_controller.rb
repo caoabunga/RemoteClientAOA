@@ -44,7 +44,7 @@ class MedicationController < ApplicationController
     end
 
     p "Posting medication history -->"
-    p medicationBuilder.to_xml
+    #p medicationBuilder.to_xml
 
     begin
       #
@@ -61,8 +61,8 @@ class MedicationController < ApplicationController
 
 
       firstXML, *lastXML = cleanResponse.split(/, /)
-      puts firstXML
-      puts *lastXML
+      #puts firstXML
+      #puts *lastXML
 
       @firstXML = Nokogiri::XML(firstXML)
       @firstXML.remove_namespaces!
@@ -88,22 +88,14 @@ class MedicationController < ApplicationController
       HelperUtils.outputPayload(medOutFilename, @requestXMLDoc.to_xml)
       logger.debug "saved."
 
+
       dateTimeStampNow = DateTime.now.to_s
       dateTimeStampNowMs = DateTime.now.to_i
 
-      coderayMsg = CodeRay.scan(@requestXMLDoc.to_xml, :xml).div
-      message = "<div class=\"accordion-group\">\r\n" +
-          "       <div class=\"accordion-heading med-heading\">\r\n" +
-          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\"  href=\"#pixSection" + dateTimeStampNowMs.to_s + "\"> Medication History Lookup Response @ " + dateTimeStampNow + "  </a>\r\n" +
-          "       </div>\r\n" +
-          "       <div id=\"pixSection" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
-          "         <div class=\"accordion-inner\">\r\n<textarea class=\"xml-container\">" +
-          @requestXMLDoc.to_xml.html_safe +
-          "         </textarea></div>\r\n" +
-          "       </div>\r\n" +
-          "     </div>"
+      title = "Medication History Lookup Response @ " + dateTimeStampNow 
+      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, @requestXMLDoc.to_xml.html_safe, title, "med-heading", false)
 
-      logger.debug message.html_safe
+      #logger.debug message.html_safe
       logger.debug "try to send to pusher now"
       Pusher['test_channel'].trigger('my_event', {
           message: message.html_safe
@@ -117,6 +109,12 @@ class MedicationController < ApplicationController
       #soaData.add_child(errorFromGlueService)
       @error = message
       logger.debug @error
+
+      title = "Patient History Lookup Error @ " + DateTime.now.to_s 
+      uiMessage = HelperUtils.buildPusherMessage("medSection" + DateTime.now.to_i.to_s, @error, title, "med-heading" , true)
+      Pusher['test_channel'].trigger('my_event', {
+          message: uiMessage.html_safe
+      })
 
     end
 

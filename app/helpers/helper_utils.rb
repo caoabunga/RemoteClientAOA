@@ -32,4 +32,24 @@ module HelperUtils
     end
   end
 
+  def self.buildPusherMessage (id, message, title, cssClass, isCodeRay)
+
+      if isCodeRay == false
+        message = "<textarea class=\"xml-container\">" + message + "</textarea>"
+      end
+
+          output = "<div class=\"accordion-group\">\r\n" +
+          "       <div class=\"accordion-heading " +  cssClass + "\">\r\n" +
+          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion2\" href=\"#" + id + "\"> " + title + " </a>\r\n" +
+          "       </div>\r\n" +
+          "       <div id=\"" + id + "\" class=\"accordion-body collapse\">\r\n" +
+          "         <div class=\"accordion-inner\">\r\n" +
+          message +
+          "         </div>\r\n" +
+          "       </div>\r\n" +
+          "     </div>"
+
+      output
+  end
+
 end

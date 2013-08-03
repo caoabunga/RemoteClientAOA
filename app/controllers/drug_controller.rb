@@ -100,33 +100,33 @@ class DrugController < ApplicationController
         end
       end
 
-      dateTimeStampNow = DateTime.now.to_s
       dateTimeStampNowMs = DateTime.now.to_i
+      dateTimeStampNow = DateTime.now.to_s
+      title = "Drug Interaction Response @ " + dateTimeStampNow 
+      message = HelperUtils.buildPusherMessage("drugSection" + dateTimeStampNowMs.to_s, messageXML.to_xml.html_safe, title, "drug-heading", false)
 
-      message = "<div class=\"accordion-group\">\r\n" +
-          "       <div class=\"accordion-heading drug-heading\">\r\n" +
-          "         <a class=\"accordion-toggle\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + dateTimeStampNowMs.to_s + "\"> Drug Interaction Response @ " + dateTimeStampNow + "  </a>\r\n" +
-          "       </div>\r\n" +
-          "       <div id=\"collapse" + dateTimeStampNowMs.to_s + "\" class=\"accordion-body collapse\">\r\n" +
-          "         <div class=\"accordion-inner\">\r\n<textarea class=\"xml-container\">" +
-          messageXML.to_xml.html_safe +
-          "         </textarea></div>\r\n" +
-          "       </div>\r\n" +
-          "     </div>"
       logger.debug("try to send drug response to pusher: ")
-      logger.debug message.html_safe
+      #logger.debug message.html_safe
       Pusher['test_channel'].trigger('my_event', {
           message: message.html_safe
       })
 
     rescue Exception => e
-      message = 'Failed in the drug controller call. ' + e.message + e.backtrace.join("\n")
+      message = 'Failed in the drug controller call. ' + e.message
       soaData = @requestXMLDoc.at_css "soaData"
       errorFromGlueService = Nokogiri::XML::Node.new "errorFromGlueService", @requestXMLDoc
       errorFromGlueService.content = message
       soaData.add_child(errorFromGlueService)
       @error = message
       logger.error @error
+      
+      dateTimeStampNowMs = DateTime.now.to_i
+      dateTimeStampNow = DateTime.now.to_s
+      title = "Drug Interaction Error Response @ " + dateTimeStampNow 
+      message = HelperUtils.buildPusherMessage("drugSection" + dateTimeStampNowMs.to_s, message.html_safe, title, "drug-heading", false)
+      Pusher['test_channel'].trigger('my_event', {
+          message: message.html_safe
+      })
     end
 
 

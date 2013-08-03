@@ -42,6 +42,6 @@
     <!-- after drug drug interaction -->
     <drugDrugInteraction>Here is the error message or if empty assume success!</drugDrugInteraction>
     <orderResponse>Order response goes here</orderResponse>
-  <!--http://10.255.166.15:8080/xxxpatienthistory/webresources/patient-history-lookup/multiple--></soaData>
+  <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple--><medication code="50580012303"/><medication code="904525646"/></soaData>
 
 </rtop2>
