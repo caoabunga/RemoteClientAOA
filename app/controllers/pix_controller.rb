@@ -6,7 +6,7 @@ require 'nokogiri'
 class PixController < ApplicationController
 
   def lookup
-
+    p "pix lookup"
     @patients = User.all
 
 #   client = Savon.client(wsdl: "http://web03:8080/axis2/services/OrderService?wsdl" )
@@ -29,27 +29,34 @@ class PixController < ApplicationController
   # @param
   #
   #require 'REXML/document'
-  require 'nokogiri'
-  require 'coderay'
 
   def rurl
     requestBodyXML = request.body.read;
-    logger.debug 'Hello PixController!'
+    logger.debug 'Hello PixController!!'
     Pusher.url = ENV["PUSHER_URL"]
 
     @requestXMLDoc = Nokogiri::XML(requestBodyXML)
     patientId = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').first['value']
+    requestedEdipi = @requestXMLDoc.xpath('//fihr:reference', 'fihr' => 'http://hl7.org/fhir').first['value']
 
-    filename = "PIXRequestSoapEnv.xml"
     filename = "PIXHealthShareRequestSoapEnv.xml"
     filename = File.join(Rails.root, 'app', 'controllers', filename)
     fileXML = File.read(filename)
     @pixRequestXMLDoc = Nokogiri::XML(fileXML)
 
+    @soapBody = @pixRequestXMLDoc.at_xpath('//soap:Body', 'soap' => 'http://www.w3.org/2003/05/soap-envelope')    
+      parsedBodyXml = Nokogiri::XML::Document.parse(@soapBody.to_xml);
+      parsedBodyXml.remove_namespaces!
+
+      edipiValue = Nokogiri::XML::Node.new "value", parsedBodyXml
+      edipiValue['root'] = "2.16.840.1.113883.3.42.10001.100001.12"
+      edipiValue['extension'] = patientId
+
+    @updatedPixRequest = @pixRequestXMLDoc.to_s.sub( "<!-- Placeholder for our edipi request values -->", edipiValue.to_s )
+    logger.debug("add edipiValue to pix request --> " + @updatedPixRequest)
+
 #  TODO munge the soap request xml to use the patient id and or firstname, last name from above
     begin
-
-
       orderNdcFromRtopReference = @requestXMLDoc.xpath('//fhir:reference', 'fhir' => 'http://hl7.org/fhir').last['value']
 
       if (orderNdcFromRtopReference.nil? || orderNdcFromRtopReference.empty?)
@@ -58,12 +65,14 @@ class PixController < ApplicationController
           raise Exception,exceptionMessage
       end
 
-
+      #qbase
       wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
       endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
-      wsdl = "http://web03/IHE/PIXManager.wsdl"
-      #wsdl="http://www.sandiegoimmunizationregistry.org/PIXManager?wsdl"
-      endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
+      
+      #itec
+      #wsdl = "http://web03/IHE/PIXManager.wsdl"
+      #endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
+      
       content_type = 'application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
       client = Savon.client(wsdl: wsdl,
                             endpoint: endpoint,
@@ -74,24 +83,20 @@ class PixController < ApplicationController
                             },
       )
 
-=begin
-#
-# Debug
-#
-puts "available ops: "
-client.operations.each do |ops|
-  puts ops
-end
-puts " ------------------------ "
-=end
+      logger.debug("Making soap pix call to: "  + endpoint)
+      response = client.call(:patient_registry_get_identifiers_query, xml: @updatedPixRequest)
 
-      response = client.call(:patient_registry_get_identifiers_query, xml: @pixRequestXMLDoc.to_s)
-      pixXML = Nokogiri::XML::Document.parse(response.to_xml);
-      pixXML.remove_namespaces!
-      pixListOfIds = pixXML.xpath('//patient/id/@extension')
-      #
-      # TODO extract the patient and shove it back into the FIHRRxOrder.xml to form the response back to the message flow
-      #
+
+      filename = "PixResponse.xml"
+      filename = File.join(Rails.root, 'public', 'payload-files', filename)
+      File.open(filename, 'w') do |f|
+        f.puts response.to_xml
+      end
+
+      @responseXMLDoc = Nokogiri::XML(response.to_xml)
+      @pixResponseBody = @responseXMLDoc.at_xpath('//soap:Body', 'soap' => 'http://www.w3.org/2003/05/soap-envelope')    
+      parsedResponseBodyXml = Nokogiri::XML::Document.parse(@pixResponseBody.to_xml);
+      parsedResponseBodyXml.remove_namespaces!      
 
       #
       # create the return <rtop2/> document, and add in the original FIHRRxOrder.xml
@@ -101,24 +106,24 @@ puts " ------------------------ "
       order = @requestXMLDoc.at_css "Order"
       rtop2.add_child(order)
 
-#
-# TODO FIX ME!  CHCS1 Hard coded
-# create <soaData/> node and add <patient/>
-#
-      logger.debug 'Warining! CHCS1 Hard coded'
-
       soaData = Nokogiri::XML::Node.new "soaData", @doc
       pixComment = Nokogiri::XML::Comment.new @doc, ' PIX lookup data '
       soaData.add_child(pixComment)
 
-      patient = Nokogiri::XML::Node.new "patient", @doc
-      patient['ien']= patientId
-      patient['system']= 'CHCS1'
-      soaData.add_child(patient)
-      patient = Nokogiri::XML::Node.new "patient", @doc
-      patient['ien']= patientId
-      patient['system']= 'CHCS2'
-      soaData.add_child(patient)
+      pixListOfIds = parsedResponseBodyXml.xpath('//patient/id').each do |node|
+        patient = Nokogiri::XML::Node.new "patient", @doc
+        patient['ien']= node['extension']
+        patient['system']= node['assigningAuthorityName']
+        soaData.add_child(patient)
+      end
+
+
+      #pixListOfIds = parsedResponseBodyXml.xpath('//patient/id/@extension').each do |patientIen|
+      #  patient = Nokogiri::XML::Node.new "patient", @doc
+      #  patient['ien']= patientIen
+      #  patient['system']= 'CHCS1'
+      #  soaData.add_child(patient)
+      #end
 
 #
 # add  <soaData/> to the <rtop/>
@@ -135,11 +140,13 @@ puts " ------------------------ "
 
       coderayMsg = CodeRay.scan(rtop2, :xml).div
       title = "PIX Lookup Response @ " + dateTimeStampNow 
-      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, coderayMsg, title, "pix-heading", true)
+      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, response.to_xml, title, "pix-heading", false)
 
+      logger.debug "push this: " + message
       Pusher['test_channel'].trigger('my_event', {
           message: message.html_safe
       })
+
 
     rescue Exception => e
       message = 'Failed - in the pix controller ' + e.message
@@ -169,6 +176,7 @@ puts " ------------------------ "
   end
 
   def show
+    p "show patients"
     @patient = Patient.find(params[:id])
   end
 end
