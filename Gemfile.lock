@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/threedaymonk/htmlentities.git
+  revision: a9f1ad6c9158eb183543a72b404cc4c20ab9b969
+  specs:
+    htmlentities (4.3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -234,6 +240,7 @@ DEPENDENCIES
   figaro (>= 0.6.3)
   haml-rails (>= 0.4)
   html2haml (>= 1.0.1)
+  htmlentities!
   hub (>= 1.10.2)
   jquery-rails
   launchy (>= 2.2.0)

@@ -80,7 +80,8 @@ class DrugController < ApplicationController
       #
       if (/#{"(?i:n)o (?i:i)nteractions (?i:f)ound"}/.match(cleanResponse))
         logger.debug("No Interactions were found! ")
-        messageXML = CodeRay.scan(cleanResponse, :xml).div
+        noInteractionOutput = cleanResponse +  ": "
+        messageXML = CodeRay.scan(soaData.to_xml, :xml).div
       else
         logger.debug("Interactions were found!" + cleanResponse)
         filename = File.join(Rails.root, 'app', 'controllers', drugdrugInteractionOrderResponseFileName)

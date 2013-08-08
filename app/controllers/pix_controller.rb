@@ -138,9 +138,10 @@ class PixController < ApplicationController
       dateTimeStampNow = DateTime.now.to_s
       dateTimeStampNowMs = DateTime.now.to_i
 
-      coderayMsg = CodeRay.scan(rtop2, :xml).div
+      coder = HTMLEntities.new
+      @encodedPushMessage = coder.encode(response.to_xml)
       title = "PIX Lookup Response @ " + dateTimeStampNow 
-      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, response.to_xml, title, "pix-heading", false)
+      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, @encodedPushMessage, title, "pix-heading", false)
 
       logger.debug "push this: " + message
       Pusher['test_channel'].trigger('my_event', {

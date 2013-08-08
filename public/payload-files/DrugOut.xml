@@ -40,9 +40,9 @@
         <medication code="555003302"/>
         <medication code="38697010101"/>
         <medication code="57344010901"/>
-        <!--<medication code="00056017690"/>-->
+        <medication code="00056017690"/>
         <medication code="78005805"/>
         <medication code="591222910"/>
         <medication code="904201380"/>
-    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,555003302,38697010101,57344010901,78005805,591222910,904201380--><drugDrugInteraction>No Interactions Found</drugDrugInteraction></soaData>
+    <!-- Medication history from http://10.255.166.15:8080/drugdruginteraction/webresources/drug-interactions/ndc-drug-interactions/51350285,555003302,38697010101,57344010901,00056017690,78005805,591222910,904201380--><drugDrugInteraction>[Scope = 3 (resolve INGREDIENT_KIND entities to the corresponding DRUG_KIND/Ingredient entities + resolve DRUG_KIND/VA Product entities to their constitutive DRUG_KIND/Ingredient entities + explore the specific salts of a non-salt form as necessary) Drug1 (nui = N0000146197), IBUPROFEN, is DRUG_KIND Drug2 (nui = N0000148057), WARFARIN, is DRUG_KIND Drug1 is resolved to IBUPROFEN, Drug2 is resolved to WARFARIN and interaction asserted in NDF-RT between IBUPROFEN and WARFARIN through IBUPROFEN/WARFARIN.</drugDrugInteraction></soaData>
 </rtop2>

@@ -5,11 +5,12 @@
       %title= content_for?(:title) ? yield(:title) : "A Client {{yourName}}" 
       %meta{:content => content_for?(:description) ? yield(:description) : "A Client", :name => "description"}
         = stylesheet_link_tag "application", :media => "all"
+        = stylesheet_link_tag "http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css", :media => "all"
         = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"
         = javascript_include_tag "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"
         = javascript_include_tag "http://cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.2/angular-strap.min.js"
         = javascript_include_tag "http://js.pusher.com/2.1/pusher.min.js"
-        = javascript_include_tag "https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"
+        = javascript_include_tag "http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"
         = javascript_include_tag "application"
         = csrf_meta_tags
         = yield(:head)

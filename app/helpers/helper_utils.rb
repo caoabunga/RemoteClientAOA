@@ -35,7 +35,8 @@ module HelperUtils
   def self.buildPusherMessage (id, message, title, cssClass, isCodeRay)
 
       if isCodeRay == false
-        message = "<textarea class=\"xml-container\">" + message + "</textarea>"
+        #message = "<textarea class=\"xml-container\">" + message + "</textarea>"
+        message = "<pre class=\"prettyprint linenums\">" + message + "</pre>"
       end
 
           output = "<div class=\"accordion-group\">\r\n" +

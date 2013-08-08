@@ -9,7 +9,14 @@
   var channel = pusher.subscribe('test_channel');
   channel.bind('my_event', function(data) {
     $("#accordion").append(data.message);
+    window.console.log("do the pretty print");
+    window.prettyPrint && prettyPrint();
   });
+   ! function ($) {
+        $(function () {
+            window.prettyPrint && prettyPrint()
+        })
+    }(window.jQuery)
 %h3 Rx Client Real-Time Messages
 %div.container
   %div{:class => "accordion", :id => "accordion"}

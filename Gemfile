@@ -36,3 +36,4 @@ gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri
 gem "hub", ">= 1.10.2", :require => nil, :group => [:development]
 gem 'nokogiri'
 gem 'pusher'
+gem 'htmlentities', :git => "https://github.com/threedaymonk/htmlentities.git"

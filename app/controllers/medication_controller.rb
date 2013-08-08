@@ -76,7 +76,7 @@ class MedicationController < ApplicationController
           xml.list @firstXML
         }
       end
-      logger.debug "BAM --> " + build.to_xml
+      #logger.debug "BAM --> " + build.to_xml
 
       #
       # insert medications into the FIHRRxOrder.xml to form the response back to the message flow
@@ -112,18 +112,19 @@ class MedicationController < ApplicationController
       HelperUtils.outputPayload(medOutFilename, @requestXMLDoc.to_xml)
       logger.debug "saved."
 
-
-      #coderayMsg = CodeRay.scan(soaData.to_s, :html).div
+      coder = HTMLEntities.new
+      @encodedPushMessage = coder.encode(soaData.to_xml)
+      #coderayMsg = CodeRay.scan(soaData.to_xml, :xml).div
       dateTimeStampNow = DateTime.now.to_s
       dateTimeStampNowMs = DateTime.now.to_i
 
       title = "Medication History Lookup Response @ " + dateTimeStampNow 
-      message = HelperUtils.buildPusherMessage("medSection" + dateTimeStampNowMs.to_s, soaData.to_xml, title, "med-heading", false)
+      message = HelperUtils.buildPusherMessage("medSection" + dateTimeStampNowMs.to_s, @encodedPushMessage, title, "med-heading", false)
 
       logger.debug message.html_safe
       logger.debug "try to send to pusher now"
       Pusher['test_channel'].trigger('my_event', {
-          message: message.html_safe
+          message: message
       })
 
     rescue Exception => e
