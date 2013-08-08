@@ -35,13 +35,13 @@
   <soaData>
     <!-- after PIX lookup -->
     <patient ien="101" system="CHCS1"/>
-    <patient ien="7988" system="CHCS2"/>
+    <patient ien="1201" system="CHCS2"/>
     <!-- after patient history -->
     <medication name="aspirin" code="57344010901"/>
     <medication name="ibuprofen" code="52125030402"/>
     <!-- after drug drug interaction -->
     <drugDrugInteraction>Here is the error message or if empty assume success!</drugDrugInteraction>
     <orderResponse>Order response goes here</orderResponse>
-  <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple--><medication code="50580012303"/><medication code="904525646"/></soaData>
+  <!--http://10.255.166.15:8080/patienthistory/webresources/patient-history-lookup/multiple--><medication code="56017090"/><medication code="83380104"/><medication code="574060810"/><medication code="54001121"/><medication code="115703301"/><medication code="24208039083"/><medication code="24208039083"/><medication code="24208039083"/><medication code="24208039083"/><medication code="24208039083"/><medication code="24208039083"/><medication code="24208039083"/><medication code="24208039083"/><medication code="187395364"/><medication code="187320447"/><medication code="703500301"/><medication code="591521610"/><medication code="10481105002"/><medication code="54429931"/><medication code="63323001002"/><medication code="61314063305"/><medication code="378021401"/><medication code="50580049660"/><medication code="51672402301"/><medication code="68850001001"/><medication code="71449903"/><medication code="172208980"/><medication code="904174840"/><medication code="904174840"/><medication code="574060810"/><medication code="63323001002"/><medication code="50580012303"/><medication code="50580012303"/><medication code="59630049590"/></soaData>
 
 </rtop2>

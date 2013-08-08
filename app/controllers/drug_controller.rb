@@ -80,6 +80,7 @@ class DrugController < ApplicationController
       #
       if (/#{"(?i:n)o (?i:i)nteractions (?i:f)ound"}/.match(cleanResponse))
         logger.debug("No Interactions were found! ")
+        messageXML = CodeRay.scan(cleanResponse, :xml).div
       else
         logger.debug("Interactions were found!" + cleanResponse)
         filename = File.join(Rails.root, 'app', 'controllers', drugdrugInteractionOrderResponseFileName)
@@ -98,14 +99,14 @@ class DrugController < ApplicationController
           #
           #  change the message being pushed to the drug interaction <OrderResponse>
           #
-          messageXML = @drugDrugInteractionResponseXMLDoc
+           messageXML = CodeRay.scan(@drugDrugInteractionResponseXMLDoc.to_xml, :xml).div
         end
       end
 
       dateTimeStampNowMs = DateTime.now.to_i
       dateTimeStampNow = DateTime.now.to_s
       title = "Drug Interaction Response @ " + dateTimeStampNow 
-      message = HelperUtils.buildPusherMessage("drugSection" + dateTimeStampNowMs.to_s, messageXML.to_xml.html_safe, title, "drug-heading", false)
+      message = HelperUtils.buildPusherMessage("drugSection" + dateTimeStampNowMs.to_s, messageXML.html_safe, title, "drug-heading", true)
 
       logger.debug("try to send drug response to pusher: ")
       #logger.debug message.html_safe

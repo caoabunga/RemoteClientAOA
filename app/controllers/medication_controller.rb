@@ -32,14 +32,12 @@ class MedicationController < ApplicationController
 
     medicationBuilder = Nokogiri::XML::Builder.new do |xml|
       xml.Patient {
-        xml.ids {
           patient.each do |p|
-            xml.id p['ien']
-            xml.system p['system']
+            xml.ids {
+              xml.id p['ien']
+              xml.system p['system']
+            }
           end
-
-        }
-
       }
     end
 
@@ -55,17 +53,30 @@ class MedicationController < ApplicationController
       request.content_type = 'application/xml'
 
       request.body = medicationBuilder.to_xml
+      puts  'our request body: ' + request.body
       response = Net::HTTP.start(url.host, url.port) { |http| http.request(request) }
-      puts 'response ---------'
+      
       cleanResponse = response.body.to_s[1..-1].chomp(']')
-
+      puts 'response ---------' + cleanResponse
 
       firstXML, *lastXML = cleanResponse.split(/, /)
       #puts firstXML
       #puts *lastXML
+      @lastXML = Nokogiri::XML(*lastXML)
+      @lastXML.remove_namespaces!
+      #logger.debug "lastXML --> " + @lastXML.to_s
 
       @firstXML = Nokogiri::XML(firstXML)
       @firstXML.remove_namespaces!
+      #logger.debug "firstXML --> " + firstXML.to_s
+
+      build = Nokogiri::XML::Builder.new do |xml|
+        xml.root {
+          xml.list @lastXML
+          xml.list @firstXML
+        }
+      end
+      logger.debug "BAM --> " + build.to_xml
 
       #
       # insert medications into the FIHRRxOrder.xml to form the response back to the message flow
@@ -75,27 +86,41 @@ class MedicationController < ApplicationController
       medicationHistoryComment = Nokogiri::XML::Comment.new @requestXMLDoc, @PATIENT_HISTORY_URL
       soaData.add_child(medicationHistoryComment)
 
-      @ndcCodes = @firstXML.xpath("//display")
 
+      @ndcCodes = @firstXML.xpath("//display")
       @ndcCodes.each do |code|
         medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
         #medication['name']= 'aspirin'
         medication['code']= code['value']
+        #logger.debug "first set --> " + code['value']
         soaData.add_child(medication)
       end
+
+
+      @lastSetNdcCodes = @lastXML.xpath("//display")
+      @lastSetNdcCodes.each do |code|
+        medication = Nokogiri::XML::Node.new "medication", @requestXMLDoc
+        #medication['name']= 'aspirin'
+        medication['code']= code['value']
+        #logger.debug "second set --> " + code['value']
+        soaData.add_child(medication)
+      end
+
+
 
       logger.debug "saving payload file: " + medOutFilename
       HelperUtils.outputPayload(medOutFilename, @requestXMLDoc.to_xml)
       logger.debug "saved."
 
 
+      #coderayMsg = CodeRay.scan(soaData.to_s, :html).div
       dateTimeStampNow = DateTime.now.to_s
       dateTimeStampNowMs = DateTime.now.to_i
 
       title = "Medication History Lookup Response @ " + dateTimeStampNow 
-      message = HelperUtils.buildPusherMessage("pixSection" + dateTimeStampNowMs.to_s, @requestXMLDoc.to_xml.html_safe, title, "med-heading", false)
+      message = HelperUtils.buildPusherMessage("medSection" + dateTimeStampNowMs.to_s, soaData.to_xml, title, "med-heading", false)
 
-      #logger.debug message.html_safe
+      logger.debug message.html_safe
       logger.debug "try to send to pusher now"
       Pusher['test_channel'].trigger('my_event', {
           message: message.html_safe

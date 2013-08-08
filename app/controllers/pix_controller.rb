@@ -66,12 +66,12 @@ class PixController < ApplicationController
       end
 
       #qbase
-      wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
-      endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
+      #wsdl = "http://172.16.12.82:37080/axis2/services/pixmgr?wsdl"
+      #endpoint = "http://172.16.12.82:37080/axis2/services/pixmgr"
       
       #itec
-      #wsdl = "http://web03/IHE/PIXManager.wsdl"
-      #endpoint = "http://10.255.166.17:57772/csp/public/hsbus/HS.IHE.PIXv3.Manager.Services.cls"
+      wsdl = "http://10.255.166.18:37080/axis2/services/pixmgr?wsdl"
+      endpoint = "http://10.255.166.18:37080/axis2/services/pixmgr"
       
       content_type = 'application/soap+xml;charset=UTF-8;action="urn:hl7-org:v3:PRPA_IN201309UV02"'
       client = Savon.client(wsdl: wsdl,
